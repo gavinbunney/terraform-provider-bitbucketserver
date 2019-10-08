@@ -11,7 +11,7 @@ env:
   - GOFLAGS=-mod=vendor GO111MODULE=on
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_5981c5a0871d_key -iv $encrypted_5981c5a0871d_iv -in scripts/gogetcookie.sh.enc -out scripts/gogetcookie.sh -d
+  - openssl aes-256-cbc -K $encrypted_e04f3cf0cf2c_key -iv $encrypted_e04f3cf0cf2c_iv -in script/gogetcookie.sh.enc -out scripts/gogetcookie.sh -d
 
 install:
   - bash scripts/gogetcookie.sh
@@ -36,7 +36,7 @@ deploy:
   provider: releases
   api_key:
     # yamllint disable rule:line-length
-    #secure: C3jcmgMrQYoQD5JQ+3q3p5I2rwBstKKjfRKhY2SWKHc+J7g+Q51NGVMNYt3UUqK4tTsELYkrjATmoINKQF4KQmHiAnYmB9kyvTyHO/3mpGVMsmz9WujOJDN1/w2aPIYLGTKwj8wpzdWk7+MMLOTnsiZnYlhEgCVEzUAvY8GJK37kPqeZPdBLJXHMYJcg4xUaHJF9tdXesivD4pUqTQbQo1soXDk+yWIUAgRo366prUniwqMqD4lanjwT29MYdnCWTTFxvCWLhcFw8NQEhOq+qql5SJKYVjIiUQGmQT91CQ/4OHdMXalXZjKhinRKVsgA5/jydrlQcGmdCNufbcUwGPVwhhPLZrgvCOYZ0SXyetlVPTU9dh6tolUJiLI1pQB7RGnqLrAEXkQGyVTLfuK5+R22P+CwTxIEoU2bdMQDdh/R31Mnb3xbIOOSF2vG9RsXyTMmo1fI2//x08O/qlp+rWuXe7a+nInlkbZLTIC4VATeg2sYBWo52LcqYufgUsZDhz0YLRbntIkPaTeCoLKGMfIeVlsvRyjDCtE70UiClAb4RwemWw8nh64GnPCfCcCBecuC2670wp1bHHyskbI77KlTlQOZUVQ4e/QjLOroEDGXaKULWD6stel5iG1YL/M5mA+J6YbWw8s/9c6fyL6D1fqfbCamRYtvwzHYc4YtJsg=
+    secure: oB4MFNo958H/bknOkG+yTQ68V0A95xRJPk8xUIrfbL+n1OJIaR3577YpVi64I/kYCxSdjSh3c99p1DP7+hKBDF8B7CQ+slVtAGh5zQ6cWsv5PDX3CWN26fixIUV2/uTdn1FWDrW9a+2JVfhBfoW/H68KtdPp6L7ZD4cgUHRlgO9buzw0Nxvuom7Aii4lg0LyxjbqEckubR/tExVu3P0k16W8LVv/ZnI7P6oqsczgGJvn4EOZw1KiKprhmdTuWELBDr9ShjMBFCyi04cSn/Ar7JG9DPUE1xxo1MNmHvckGBzFXbYOTKik3qQ0olwG3XeAhyoNIfce3siWjVIfPm9F2491sAbCXka5H7UmJkqw7k6eR4UtrS6Zeolti/4ioT/7rJcyO438Za6xYQmtkBPBCE2mAWSw/b42QGbsi5PPnRBYID5Solx+74Fx855/TMqJXpHm6Qq3/+zIatBRbVqyzzJsdI8rUA6gqudE4DN9w50qOYENP2WxodbORuzW7wZzK0Eyl2XkzJ1osfr824eM7FekUZqyIDhH9VnD044itqcE5xhYI1mz84AY0vGCPB0DbJZH+qrM9e39huL/CoauN/FgOBFoH9e/g5K+bTSZSUFKh3BIG6moBNS8apDoa5+c8c7/A3U2Ero2F4Y6v2sLK36w7sCUmhyPHPowAwZf7yw=
   file_glob: true
   file: bin/*
   body: ${BODY}
