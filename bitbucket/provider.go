@@ -29,7 +29,7 @@ func Provider() terraform.ResourceProvider {
 		},
 		ConfigureFunc: providerConfigure,
 		ResourcesMap: map[string]*schema.Resource{
-			"bitbucketserver_repository":        resourceRepository(),
+			"bitbucketserver_repository": resourceRepository(),
 		},
 	}
 }
