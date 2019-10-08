@@ -29,8 +29,9 @@ func Provider() terraform.ResourceProvider {
 		},
 		ConfigureFunc: providerConfigure,
 		ResourcesMap: map[string]*schema.Resource{
-			"bitbucketserver_project":    resourceProject(),
-			"bitbucketserver_repository": resourceRepository(),
+			"bitbucketserver_admin_mail_server": resourceAdminMailServer(),
+			"bitbucketserver_project":           resourceProject(),
+			"bitbucketserver_repository":        resourceRepository(),
 		},
 	}
 }

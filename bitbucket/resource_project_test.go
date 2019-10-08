@@ -11,8 +11,6 @@ import (
 )
 
 func TestAccBitbucketProject(t *testing.T) {
-	var repo Repository
-
 	testAccBitbucketProjectConfig := fmt.Sprintf(`
 		resource "bitbucketserver_project" "test" {
 			key = "TEST%v"
@@ -28,7 +26,7 @@ func TestAccBitbucketProject(t *testing.T) {
 			{
 				Config: testAccBitbucketProjectConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckBitbucketProjectExists("bitbucketserver_project.test", &repo),
+					testAccCheckBitbucketProjectExists("bitbucketserver_project.test"),
 				),
 			},
 		},
@@ -51,7 +49,7 @@ func testAccCheckBitbucketProjectDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccCheckBitbucketProjectExists(n string, repository *Repository) resource.TestCheckFunc {
+func testAccCheckBitbucketProjectExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 		if !ok {
