@@ -16,9 +16,9 @@ install:
   - bash scripts/gogetcookie.sh
 
 script:
-  #- bash scripts/startk3s_ci.sh
+  - bash scripts/start-docker-compose.sh
   - make build
-  #- KUBECONFIG=/etc/rancher/k3s/k3s.yaml make testacc
+  - BITBUCKET_SERVER=http://localhost:7990 BITBUCKER_USERNAME=admin BITBUCKET_PASSWORD=admin make testacc
 
 matrix:
   fast_finish: true

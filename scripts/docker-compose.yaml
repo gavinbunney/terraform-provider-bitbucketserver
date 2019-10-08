@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  confluence:
+    image: atlassian/bitbucket-server:6.7.0
+    restart: always
+    networks:
+      - bridge
+    ports:
+      - '7990:7990'
+    environment:
+      - 'SETUP_DISPLAYNAME=Bitbucket'
+      - 'SETUP_BASEURL=http://localhost:7990'
+      - 'SETUP_LICENSE=AAACLg0ODAoPeNqNVEtv4jAQvudXRNpbpUSEx6FIOQBxW3ZZiCB0V1WllXEG8DbYke3A8u/XdUgVQyg9ZvLN+HuM/e1BUHdGlNvuuEHQ73X73Y4bR4nbbgU9ZwFiD2IchcPH+8T7vXzuej9eXp68YSv45UwoASYhOeYwxTsIE7RIxtNHhwh+SP3a33D0XnntuxHsIeM5CIdwtvYxUXQPoRIF6KaC0FUGVlEB3v0hOAOWYiH9abFbgZith3i34nwOO65gsAGmZBhUbNC/nIpjhBWEcefJWelzqIDPWz/OtjmXRYv2XyqwnwueFkT57x8e4cLmbCD1QnX0UoKQoRc4EUgiaK4oZ2ECUrlZeay75sLNs2JDmZtWR8oPCfWZGwHAtjzXgIo0SqmZiKYJmsfz8QI5aI+zApuq6fqJKVPAMCPnNpk4LPW6kBWgkZb+kQAzzzS2g6Dnte69Tqvsr4SOskIqEFOeggz1v4zrHbr0yLJR8rU64FpQpVtBy1mZxM4CnHC9Faf8tKMnTF1AiXORFixyQaWto3RZ+ncWLXtMg6EnKZZRpmQNb2R8tnJXFulCfXmXLry7TrHBWn2HNVyH8WYxj9AzmsxiNL/R88Xg6rA1lVs4QpO5titxhplJcCY2mFFZLutAZVhKipm15/VhJx36YVqyN8YP7IaGC1+lwnJ7Q5pJpNmxk5hP3qovutY8Pi4E2WIJ59esnr1p+T6eD67teBVCHf+ga+ho4/4D9YItZDAsAhQ5qQ6pASJ+SA7YG9zthbLxRoBBEwIURQr5Zy1B8PonepyLz3UhL7kMVEs=X02q6'
+      - 'SETUP_SYSADMIN_USERNAME=admin'
+      - 'SETUP_SYSADMIN_PASSWORD=admin'
+      - 'SETUP_SYSADMIN_DISPLAYNAME=Admin'
+      - 'SETUP_SYSADMIN_EMAILADDRESS=admin@example.com'
+    mem_limit: 4G
+
+networks:
+  bridge:
+    driver: bridge
