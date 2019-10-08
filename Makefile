@@ -3,6 +3,10 @@ GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 PKG_NAME=bitbucket
 export GO111MODULE=on
 
+export BITBUCKET_SERVER=http://localhost:7990
+export BITBUCKET_USERNAME=admin
+export BITBUCKET_PASSWORD=admin
+
 default: build
 
 build: fmtcheck
@@ -15,6 +19,11 @@ test: fmtcheck
 
 testacc: fmtcheck
 	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m -count=1
+
+testacc-bitbucket: fmtcheck
+	@sh scripts/start-docker-compose.sh
+	TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m -count=1
+	@sh scripts/stop-docker-compose.sh
 
 vet:
 	@echo "go vet ."
