@@ -2,7 +2,6 @@
 set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
 cd ${DIR}
 
 if [ ! -f ${DIR}/docker-compose ]; then
@@ -15,4 +14,4 @@ echo "--> Starting docker-compose"
 ${DIR}/docker-compose up -d
 
 echo "--> Wait for bitbucket to be ready"
-bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:7990/status)" != "200" ]]; do sleep 5; done'
+bash ${DIR}/wait-for-url.sh --url http://localhost:7990/status --timeout 600

@@ -2,7 +2,9 @@ package bitbucket
 
 import (
 	"fmt"
+	"math/rand"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform/helper/resource"
 	"github.com/hashicorp/terraform/terraform"
@@ -11,12 +13,17 @@ import (
 func TestAccBitbucketRepository_basic(t *testing.T) {
 	var repo Repository
 
-	testAccBitbucketRepositoryConfig := `
-		resource "bitbucketserver_repository" "test_repo" {
-			project = "TEST"
+	testAccBitbucketRepositoryConfig := fmt.Sprintf(`
+		resource "bitbucketserver_project" "test" {
+			key = "TEST%v"
 			name = "test-repo-for-repository-test"
 		}
-	`
+
+		resource "bitbucketserver_repository" "test_repo" {
+			project = bitbucketserver_project.test.key
+			name = "test-repo-for-repository-test"
+		}
+	`, rand.New(rand.NewSource(time.Now().UnixNano())).Int())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -36,13 +43,18 @@ func TestAccBitbucketRepository_basic(t *testing.T) {
 func TestAccBitbucketRepository_namewithspaces(t *testing.T) {
 	var repo Repository
 
-	testAccBitbucketRepositoryConfig := `
+	testAccBitbucketRepositoryConfig := fmt.Sprintf(`
+		resource "bitbucketserver_project" "test" {
+			key = "TEST%v"
+			name = "test-repo-for-repository-test"
+		}
+
 		resource "bitbucketserver_repository" "test_repo" {
-			project = "TEST"
+			project = bitbucketserver_project.test.key
 			name = "Test Repo For Repository Test"
 			slug = "test-repo-for-repository-test"
 		}
-	`
+	`, rand.New(rand.NewSource(time.Now().UnixNano())).Int())
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
