@@ -18,7 +18,6 @@ type CloneUrl struct {
 type Repository struct {
 	Name        string `json:"name,omitempty"`
 	Slug        string `json:"slug,omitempty"`
-	SCM         string `json:"scmId,omitempty"`
 	Description string `json:"description,omitempty"`
 	Forkable    bool   `json:"forkable,omitempty"`
 	Public      bool   `json:"public,omitempty"`
@@ -52,11 +51,6 @@ func resourceRepository() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"scm": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "git",
-			},
 			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -87,7 +81,6 @@ func newRepositoryFromResource(d *schema.ResourceData) (Repo *Repository, Projec
 	repo := &Repository{
 		Name:        d.Get("name").(string),
 		Slug:        d.Get("slug").(string),
-		SCM:         d.Get("scm").(string),
 		Description: d.Get("description").(string),
 		Forkable:    d.Get("forkable").(bool),
 		Public:      d.Get("public").(bool),
@@ -186,7 +179,6 @@ func resourceRepositoryRead(d *schema.ResourceData, m interface{}) error {
 		if repo.Slug != "" && repo.Name != repo.Slug {
 			d.Set("slug", repo.Slug)
 		}
-		d.Set("scmId", repo.SCM)
 		d.Set("description", repo.Description)
 		d.Set("forkable", repo.Forkable)
 		d.Set("public", repo.Public)
@@ -204,9 +196,21 @@ func resourceRepositoryRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceRepositoryExists(d *schema.ResourceData, m interface{}) (bool, error) {
+
+	var project = ""
+	var repoSlug = ""
+	id := d.Id()
+	if id != "" {
+		idparts := strings.Split(id, "/")
+		if len(idparts) == 2 {
+			project = idparts[0]
+			repoSlug = idparts[1]
+		} else {
+			return false, fmt.Errorf("incorrect ID format, should match `project/slug`")
+		}
+	}
+
 	client := m.(*BitbucketClient)
-	repoSlug := determineSlug(d)
-	project := d.Get("project").(string)
 	repo_req, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s",
 		project,
 		repoSlug,

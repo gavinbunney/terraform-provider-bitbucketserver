@@ -4,9 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-
 	"github.com/hashicorp/terraform/helper/schema"
+	"io/ioutil"
 )
 
 type Project struct {
@@ -150,8 +149,15 @@ func resourceProjectRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceProjectExists(d *schema.ResourceData, m interface{}) (bool, error) {
+	var project = ""
+	id := d.Id()
+	if id != "" {
+		project = id
+	} else {
+		project = d.Get("key").(string)
+	}
+
 	client := m.(*BitbucketClient)
-	project := d.Get("key").(string)
 	repo_req, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s",
 		project,
 	))
