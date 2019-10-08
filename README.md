@@ -1,6 +1,8 @@
 Bitbucket Server Terraform Provider
 ==================
 
+[![Build Status](https://travis-ci.org/gavinbunney/terraform-provider-bitbucketserver.svg?branch=master)](https://travis-ci.org/gavinbunney/terraform-provider-bitbucketserver)
+
 This terraform provider allows management of bitbucket server resources.
 
 > Note: The bundled terraform bitbucket provider works for bitbucket cloud - this provider is for bitbucket server only!
@@ -19,11 +21,81 @@ provider "bitbucketserver" {
   password = "password"
 }
 
+resource "bitbucketserver_project" "test" {
+  key         = "TEST"
+  name        = "test-01"
+  description = "Test project"
+}
+
 resource "bitbucketserver_repository" "test" {
-  project     = "TEST"
+  project     = bitbucketserver_project.test.key
   name        = "test-01"
   description = "Test repository"
 }
+```
+
+### Provider Configuration
+
+The provider supports parameters to determine the bitbucket server and admin user/password to use.
+
+```hcl
+provider "bitbucketserver" {
+  server   = "https://mybitbucket.example.com"
+  username = "admin"
+  password = "password"
+}
+```
+
+You can also specify these parameters through the `BITBUCKET_SERVER`, `BITBUCKER_USERNAME` and `BITBUCKET_PASSWORD` environment variables.
+
+### Create a Bitbucket Project
+
+```hcl
+resource "bitbucketserver_project" "test" {
+  key         = "TEST"
+  name        = "test-01"
+  description = "Test project"
+  avatar      = "data:(content type, e.g. image/png);base64,(data)"
+}
+```
+
+* `key` - Required. Project key to set
+* `name` - Required. Name of the project.
+* `description` - Optional. Description of the project.
+* `avatar` - Optional. Avatar to use containing base64-encoded image data. Format: `data:(content type, e.g. image/png);base64,(data)`
+
+#### Import Project
+
+```bash
+$ terraform import bitbucketserver_project.test TEST
+```
+
+### Create a Bitbucket Repository
+
+```hcl
+resource "bitbucketserver_repository" "test" {
+  name        = "test-01"
+  description = "Test repository"
+}
+```
+
+* `name` - Required. Name of the project.
+* `slug` - Optional. Slug to use for the repository. Calculated if not defined.
+* `description` - Optional. Description of the repository.
+* `forkable` - Optional. Enable/disable forks of this repository. Default `true`
+* `public` - Optional. Determine if this repository is public. Default `false`
+
+#### Attributes
+
+Additional to the above, the following attributes are emitted:
+
+* `clone_ssh` - URL for SSH cloning of the repository.
+* `clone_https` - URL for HTTPS cloning of the repository.
+
+#### Import Repository
+
+```bash
+$ terraform import bitbucketserver_repository.test TEST/test-01
 ```
 
 ---
