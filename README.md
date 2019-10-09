@@ -173,6 +173,18 @@ data "bitbucketserver_application_properties" "main" {}
 * `build_date` - Date the Bitbucket build was made,
 * `display_name` - Name of the Bitbucket instance.
 
+### Application Properties
+
+```hcl
+data "bitbucketserver_project_groups" "proj" {
+  project = "TEST"
+}
+```
+
+#### Attributes
+
+* `groups` - List of maps containing `name` and `permission` keys.
+
 ---
 
 ## Development Guide

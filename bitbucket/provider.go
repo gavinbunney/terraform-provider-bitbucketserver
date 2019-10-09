@@ -30,6 +30,7 @@ func Provider() terraform.ResourceProvider {
 		ConfigureFunc: providerConfigure,
 		DataSourcesMap: map[string]*schema.Resource{
 			"bitbucketserver_application_properties": dataSourceApplicationProperties(),
+			"bitbucketserver_project_groups":         dataSourceProjectGroups(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"bitbucketserver_admin_license":     resourceAdminLicense(),
