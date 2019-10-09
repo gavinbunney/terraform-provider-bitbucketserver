@@ -12,16 +12,25 @@ import (
 
 // Error represents a error from the bitbucket api.
 type Error struct {
-	APIError struct {
-		Message string `json:"message,omitempty"`
-	} `json:"error,omitempty"`
-	Type       string `json:"type,omitempty"`
+	Errors []struct {
+		Context   string `json:"context,omitempty"`
+		Message   string `json:"message,omitempty"`
+		Exception string `json:"exceptionName,omitempty"`
+	} `json:"errors,omitempty"`
 	StatusCode int
 	Endpoint   string
 }
 
 func (e Error) Error() string {
-	return fmt.Sprintf("API Error: %d %s %s", e.StatusCode, e.Endpoint, e.APIError.Message)
+
+	var errorMessages = ""
+	if e.Errors != nil {
+		for _, err := range e.Errors {
+			errorMessages += err.Message + "\n"
+		}
+	}
+
+	return fmt.Sprintf("API Error: %d %s %s", e.StatusCode, e.Endpoint, errorMessages)
 }
 
 type BitbucketClient struct {
@@ -72,11 +81,7 @@ func (c *BitbucketClient) Do(method, endpoint string, payload *bytes.Buffer) (*h
 
 		log.Printf("[DEBUG] Resp Body: %s", string(body))
 
-		err = json.Unmarshal(body, &apiError)
-		if err != nil {
-			apiError.APIError.Message = string(body)
-		}
-
+		_ = json.Unmarshal(body, &apiError)
 		return resp, error(apiError)
 
 	}
