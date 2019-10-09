@@ -9,14 +9,14 @@ import (
 	"github.com/hashicorp/terraform/helper/resource"
 )
 
-func TestAccBitbucketDatProjectGroups_check_empty(t *testing.T) {
+func TestAccBitbucketDataProjectPermissionsGroups_check_empty(t *testing.T) {
 	config := fmt.Sprintf(`
 		resource "bitbucketserver_project" "test" {
 			key = "TEST%v"
 			name = "test-repo-for-repository-test"
 		}
 		
-		data "bitbucketserver_project_groups" "test" {
+		data "bitbucketserver_project_permissions_groups" "test" {
 			project = bitbucketserver_project.test.key
 		}
 	`, rand.New(rand.NewSource(time.Now().UnixNano())).Int())
@@ -28,7 +28,7 @@ func TestAccBitbucketDatProjectGroups_check_empty(t *testing.T) {
 			{
 				Config: config,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("data.bitbucketserver_project_groups.test", "groups.#", "0"),
+					resource.TestCheckResourceAttr("data.bitbucketserver_project_permissions_groups.test", "groups.#", "0"),
 				),
 			},
 		},

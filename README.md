@@ -176,7 +176,7 @@ data "bitbucketserver_application_properties" "main" {}
 ### Application Properties
 
 ```hcl
-data "bitbucketserver_project_groups" "proj" {
+data "bitbucketserver_project_permissions_groups" "proj" {
   project = "TEST"
 }
 ```

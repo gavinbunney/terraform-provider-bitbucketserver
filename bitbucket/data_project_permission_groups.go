@@ -6,25 +6,25 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-type ProjectGroup struct {
+type ProjectPermissionsGroup struct {
 	Group struct {
 		Name string `json:"name,omitempty"`
 	} `json:"group,omitempty"`
 	Permission string `json:"permission,omitempty"`
 }
 
-type PaginatedProjectGroups struct {
-	Values        []ProjectGroup `json:"values,omitempty"`
-	Size          int            `json:"size,omitempty"`
-	Limit         int            `json:"limit,omitempty"`
-	IsLastPage    bool           `json:"isLastPage,omitempty"`
-	Start         int            `json:"start,omitempty"`
-	NextPageStart int            `json:"nextPageStart,omitempty"`
+type PaginatedProjectPermissionsGroups struct {
+	Values        []ProjectPermissionsGroup `json:"values,omitempty"`
+	Size          int                       `json:"size,omitempty"`
+	Limit         int                       `json:"limit,omitempty"`
+	IsLastPage    bool                      `json:"isLastPage,omitempty"`
+	Start         int                       `json:"start,omitempty"`
+	NextPageStart int                       `json:"nextPageStart,omitempty"`
 }
 
-func dataSourceProjectGroups() *schema.Resource {
+func dataSourceProjectPermissionsGroups() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceProjectGroupsRead,
+		Read: dataSourceProjectPermissionsGroupsRead,
 
 		Schema: map[string]*schema.Schema{
 			"project": {
@@ -51,14 +51,14 @@ func dataSourceProjectGroups() *schema.Resource {
 	}
 }
 
-func dataSourceProjectGroupsRead(d *schema.ResourceData, m interface{}) error {
+func dataSourceProjectPermissionsGroupsRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketClient)
 
 	resourceURL := fmt.Sprintf("/rest/api/1.0/projects/%s/permissions/groups",
 		d.Get("project").(string),
 	)
 
-	var projectGroups PaginatedProjectGroups
+	var projectGroups PaginatedProjectPermissionsGroups
 	var terraformGroups []interface{}
 
 	for {
@@ -85,7 +85,7 @@ func dataSourceProjectGroupsRead(d *schema.ResourceData, m interface{}) error {
 				d.Get("project").(string),
 				projectGroups.NextPageStart,
 			)
-			projectGroups = PaginatedProjectGroups{}
+			projectGroups = PaginatedProjectPermissionsGroups{}
 		} else {
 			break
 		}
