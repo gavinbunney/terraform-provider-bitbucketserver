@@ -158,6 +158,23 @@ $ terraform import bitbucketserver_admin_mail_server.mail mail.example.com
 
 ---
 
+## Data Sources
+
+### Application Properties
+
+```hcl
+data "bitbucketserver_application_properties" "main" {}
+```
+
+#### Attributes
+
+* `version` - Version of Bitbucket.
+* `build_number` - Build number of the Bitbucket instance.
+* `build_date` - Date the Bitbucket build was made,
+* `display_name` - Name of the Bitbucket instance.
+
+---
+
 ## Development Guide
 
 ### Requirements
