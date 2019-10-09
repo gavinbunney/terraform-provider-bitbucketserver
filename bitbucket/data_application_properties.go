@@ -7,9 +7,9 @@ import (
 )
 
 type ApplicationProperties struct {
-	Version string `json:"version,omitempty"`
+	Version     string `json:"version,omitempty"`
 	BuildNumber string `json:"buildNumber,omitempty"`
-	BuildDate string `json:"buildDate,omitempty"`
+	BuildDate   string `json:"buildDate,omitempty"`
 	DisplayName string `json:"displayName,omitempty"`
 }
 
@@ -19,20 +19,20 @@ func dataSourceApplicationProperties() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"version": {
-				Type:        schema.TypeString,
-				Computed:    true,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"build_number": {
-				Type:        schema.TypeString,
-				Computed:    true,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"build_date": {
-				Type:        schema.TypeString,
-				Computed:    true,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"display_name": {
-				Type:        schema.TypeString,
-				Computed:    true,
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 		},
 	}
