@@ -57,7 +57,7 @@ func testAccCheckBitbucketAdminMailServerExists(n string) resource.TestCheckFunc
 			return fmt.Errorf("not found %s", n)
 		}
 		if rs.Primary.ID == "" {
-			return fmt.Errorf("no project ID is set")
+			return fmt.Errorf("no mail ID is set")
 		}
 		return nil
 	}

@@ -98,6 +98,38 @@ Additional to the above, the following attributes are emitted:
 $ terraform import bitbucketserver_repository.test TEST/test-01
 ```
 
+### Set Server License
+
+```hcl
+resource "bitbucketserver_admin_license" "main" {
+  license = "AAACLg0ODAoPeNqNVEtv4jAQvudXRNpbp"
+}
+```
+
+* `license` - Required. License to apply.
+
+#### Attributes
+
+Additional to the above, the following attributes are emitted:
+
+* `clone_ssh` - URL for SSH cloning of the repository.
+* `clone_https` - URL for HTTPS cloning of the repository.
+* `creation_date` - License creation date.
+* `purchase_date` - License purchase date.
+* `expiry_date` - Expiry date of the license.
+* `maintenance_expiry_date` - Expiry date of the maintenance period.
+* `grace_period_end_date` - Grace period beyond expiry date.
+* `maximum_users` - Maximum number of users for license.
+* `unlimited_users` - Boolean flag if this is an unlimited user license.
+* `server_id` - Server ID.
+* `support_entitlement_number` - Entitlement number for support requests.
+
+#### Import License
+
+```bash
+$ terraform import bitbucketserver_admin_license.main license
+```
+
 ### Set Mail Server Configuration
 
 ```hcl
