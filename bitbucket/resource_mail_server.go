@@ -18,12 +18,12 @@ type MailConfiguration struct {
 	SenderAddress   string `json:"sender-address,omitempty"`
 }
 
-func resourceAdminMailServer() *schema.Resource {
+func resourceMailServer() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceAdminMailServerCreate,
-		Update: resourceAdminMailServerUpdate,
-		Read:   resourceAdminMailServerRead,
-		Delete: resourceAdminMailServerDelete,
+		Create: resourceMailServerCreate,
+		Update: resourceMailServerUpdate,
+		Read:   resourceMailServerRead,
+		Delete: resourceMailServerDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -85,7 +85,7 @@ func newMailConfigurationFromResource(d *schema.ResourceData) *MailConfiguration
 	return mailConfiguration
 }
 
-func resourceAdminMailServerUpdate(d *schema.ResourceData, m interface{}) error {
+func resourceMailServerUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketClient)
 	mailConfiguration := newMailConfigurationFromResource(d)
 
@@ -102,14 +102,14 @@ func resourceAdminMailServerUpdate(d *schema.ResourceData, m interface{}) error 
 
 	d.SetId(mailConfiguration.Hostname)
 
-	return resourceAdminMailServerRead(d, m)
+	return resourceMailServerRead(d, m)
 }
 
-func resourceAdminMailServerCreate(d *schema.ResourceData, m interface{}) error {
-	return resourceAdminMailServerUpdate(d, m)
+func resourceMailServerCreate(d *schema.ResourceData, m interface{}) error {
+	return resourceMailServerUpdate(d, m)
 }
 
-func resourceAdminMailServerRead(d *schema.ResourceData, m interface{}) error {
+func resourceMailServerRead(d *schema.ResourceData, m interface{}) error {
 
 	client := m.(*BitbucketClient)
 	req, err := client.Get("/rest/api/1.0/admin/mail-server")
@@ -145,7 +145,7 @@ func resourceAdminMailServerRead(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceAdminMailServerDelete(d *schema.ResourceData, m interface{}) error {
+func resourceMailServerDelete(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketClient)
 	_, err := client.Delete("/rest/api/1.0/admin/mail-server")
 	return err

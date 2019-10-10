@@ -8,9 +8,9 @@ import (
 	"github.com/hashicorp/terraform/terraform"
 )
 
-func TestAccBitbucketAdminMailServer(t *testing.T) {
-	testAccBitbucketAdminMailServerConfig := `
-		resource "bitbucketserver_admin_mail_server" "test" {
+func TestAccBitbucketMailServer(t *testing.T) {
+	testAccBitbucketMailServerConfig := `
+		resource "bitbucketserver_mail_server" "test" {
 			hostname = "mail.example.com"
 			port = 465
 			protocol = "SMTP"
@@ -23,23 +23,23 @@ func TestAccBitbucketAdminMailServer(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckBitbucketAdminMailServerDestroy,
+		CheckDestroy: testAccCheckBitbucketMailServerDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccBitbucketAdminMailServerConfig,
+				Config: testAccBitbucketMailServerConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckBitbucketAdminMailServerExists("bitbucketserver_admin_mail_server.test"),
+					testAccCheckBitbucketMailServerExists("bitbucketserver_mail_server.test"),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckBitbucketAdminMailServerDestroy(s *terraform.State) error {
+func testAccCheckBitbucketMailServerDestroy(s *terraform.State) error {
 	client := testAccProvider.Meta().(*BitbucketClient)
-	_, ok := s.RootModule().Resources["bitbucketserver_admin_mail_server.test"]
+	_, ok := s.RootModule().Resources["bitbucketserver_mail_server.test"]
 	if !ok {
-		return fmt.Errorf("not found %s", "bitbucketserver_admin_mail_server.test")
+		return fmt.Errorf("not found %s", "bitbucketserver_mail_server.test")
 	}
 
 	response, _ := client.Get("/rest/api/1.0/admin/main-server")
@@ -50,7 +50,7 @@ func testAccCheckBitbucketAdminMailServerDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccCheckBitbucketAdminMailServerExists(n string) resource.TestCheckFunc {
+func testAccCheckBitbucketMailServerExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 		if !ok {

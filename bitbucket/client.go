@@ -69,7 +69,7 @@ func (c *BitbucketClient) Do(method, endpoint string, payload *bytes.Buffer) (*h
 
 	resp, err := c.HTTPClient.Do(req)
 	log.Printf("[DEBUG] Resp: %v Err: %v", resp, err)
-	if resp.StatusCode >= 400 || resp.StatusCode < 200 {
+	if resp != nil && (resp.StatusCode >= 400 || resp.StatusCode < 200) {
 		apiError := Error{
 			StatusCode: resp.StatusCode,
 			Endpoint:   endpoint,

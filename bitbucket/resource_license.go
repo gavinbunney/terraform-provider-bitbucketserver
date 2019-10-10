@@ -26,12 +26,12 @@ type LicenseResponse struct {
 	SupportEntitlementNumber string   `json:"supportEntitlementNumber,omitempty"`
 }
 
-func resourceAdminLicense() *schema.Resource {
+func resourceLicense() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceAdminLicenseCreate,
-		Update: resourceAdminLicenseUpdate,
-		Read:   resourceAdminLicenseRead,
-		Delete: resourceAdminLicenseDelete,
+		Create: resourceLicenseCreate,
+		Update: resourceLicenseUpdate,
+		Read:   resourceLicenseRead,
+		Delete: resourceLicenseDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -90,7 +90,7 @@ func newLicenseFromResource(d *schema.ResourceData) *License {
 	return license
 }
 
-func resourceAdminLicenseUpdate(d *schema.ResourceData, m interface{}) error {
+func resourceLicenseUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketClient)
 	license := newLicenseFromResource(d)
 
@@ -106,14 +106,14 @@ func resourceAdminLicenseUpdate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	d.SetId(fmt.Sprintf("%x", sha256.Sum256([]byte(license.License))))
-	return resourceAdminLicenseRead(d, m)
+	return resourceLicenseRead(d, m)
 }
 
-func resourceAdminLicenseCreate(d *schema.ResourceData, m interface{}) error {
-	return resourceAdminLicenseUpdate(d, m)
+func resourceLicenseCreate(d *schema.ResourceData, m interface{}) error {
+	return resourceLicenseUpdate(d, m)
 }
 
-func resourceAdminLicenseRead(d *schema.ResourceData, m interface{}) error {
+func resourceLicenseRead(d *schema.ResourceData, m interface{}) error {
 
 	client := m.(*BitbucketClient)
 	req, err := client.Get("/rest/api/1.0/admin/license")
@@ -151,7 +151,7 @@ func resourceAdminLicenseRead(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceAdminLicenseDelete(d *schema.ResourceData, m interface{}) error {
+func resourceLicenseDelete(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketClient)
 	_, err := client.Delete("/rest/api/1.0/admin/mail-server")
 	return err

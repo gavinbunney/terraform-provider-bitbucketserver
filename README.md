@@ -174,7 +174,7 @@ $ terraform import bitbucketserver_user.test mreynolds
 ### Set Server License
 
 ```hcl
-resource "bitbucketserver_admin_license" "main" {
+resource "bitbucketserver_license" "main" {
   license = "AAACLg0ODAoPeNqNVEtv4jAQvudXRNpbp"
 }
 ```
@@ -200,14 +200,14 @@ Additional to the above, the following attributes are emitted:
 #### Import License
 
 ```bash
-$ terraform import bitbucketserver_admin_license.main license
+$ terraform import bitbucketserver_license.main license
 ```
 
 
 ### Set Mail Server Configuration
 
 ```hcl
-resource "bitbucketserver_admin_mail_server" "mail" {
+resource "bitbucketserver_mail_server" "mail" {
   hostname       = "mail.example.com"
   port           = 465
   protocol       = "SMTPS"
@@ -227,7 +227,7 @@ resource "bitbucketserver_admin_mail_server" "mail" {
 #### Import Mail Configuration
 
 ```bash
-$ terraform import bitbucketserver_admin_mail_server.mail mail.example.com
+$ terraform import bitbucketserver_mail_server.mail mail.example.com
 ```
 
 ---
