@@ -61,10 +61,10 @@ func dataSourceApplicationPropertiesRead(d *schema.ResourceData, m interface{}) 
 		}
 
 		d.SetId(applicationProperties.Version)
-		d.Set("version", applicationProperties.Version)
-		d.Set("build_number", applicationProperties.BuildNumber)
-		d.Set("build_date", applicationProperties.BuildDate)
-		d.Set("display_name", applicationProperties.DisplayName)
+		_ = d.Set("version", applicationProperties.Version)
+		_ = d.Set("build_number", applicationProperties.BuildNumber)
+		_ = d.Set("build_date", applicationProperties.BuildDate)
+		_ = d.Set("display_name", applicationProperties.DisplayName)
 	}
 
 	return nil

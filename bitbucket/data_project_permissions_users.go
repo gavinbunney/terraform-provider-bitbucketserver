@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/terraform/helper/schema"
+	"net/url"
 )
 
 type PaginatedProjectPermissionsUsersValue struct {
@@ -97,7 +98,7 @@ func dataSourceProjectPermissionsUsersRead(d *schema.ResourceData, m interface{}
 		terraformUsers = append(terraformUsers, g)
 	}
 
-	d.Set("users", terraformUsers)
+	_ = d.Set("users", terraformUsers)
 	return nil
 }
 
@@ -109,7 +110,7 @@ func readProjectPermissionsUsers(m interface{}, project string, filter string) (
 	)
 
 	if filter != "" {
-		resourceURL += "?filter=" + filter
+		resourceURL += "?filter=" + url.QueryEscape(filter)
 	}
 
 	var projectUsers PaginatedProjectPermissionsUsers
@@ -145,7 +146,7 @@ func readProjectPermissionsUsers(m interface{}, project string, filter string) (
 			)
 
 			if filter != "" {
-				resourceURL += "&filter=" + filter
+				resourceURL += "&filter=" + url.QueryEscape(filter)
 			}
 
 			projectUsers = PaginatedProjectPermissionsUsers{}

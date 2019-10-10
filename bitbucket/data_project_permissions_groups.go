@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/terraform/helper/schema"
+	"net/url"
 )
 
 type PaginatedProjectPermissionsGroupsValue struct {
@@ -76,7 +77,7 @@ func dataSourceProjectPermissionsGroupsRead(d *schema.ResourceData, m interface{
 		terraformGroups = append(terraformGroups, g)
 	}
 
-	d.Set("groups", terraformGroups)
+	_ = d.Set("groups", terraformGroups)
 	return nil
 }
 
@@ -88,7 +89,7 @@ func readProjectPermissionsGroups(m interface{}, project string, filter string) 
 	)
 
 	if filter != "" {
-		resourceURL += "?filter=" + filter
+		resourceURL += "?filter=" + url.QueryEscape(filter)
 	}
 
 	var projectGroups PaginatedProjectPermissionsGroups
@@ -121,7 +122,7 @@ func readProjectPermissionsGroups(m interface{}, project string, filter string) 
 			)
 
 			if filter != "" {
-				resourceURL += "&filter=" + filter
+				resourceURL += "&filter=" + url.QueryEscape(filter)
 			}
 
 			projectGroups = PaginatedProjectPermissionsGroups{}

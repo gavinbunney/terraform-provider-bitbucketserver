@@ -30,10 +30,13 @@ func Provider() terraform.ResourceProvider {
 		ConfigureFunc: providerConfigure,
 		DataSourcesMap: map[string]*schema.Resource{
 			"bitbucketserver_application_properties":     dataSourceApplicationProperties(),
+			"bitbucketserver_groups":                     dataSourceGroups(),
+			"bitbucketserver_group_users":                dataSourceGroupUsers(),
 			"bitbucketserver_project_permissions_groups": dataSourceProjectPermissionsGroups(),
 			"bitbucketserver_project_permissions_users":  dataSourceProjectPermissionsUsers(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
+			"bitbucketserver_group":                     resourceGroup(),
 			"bitbucketserver_license":                   resourceLicense(),
 			"bitbucketserver_mail_server":               resourceMailServer(),
 			"bitbucketserver_project":                   resourceProject(),
@@ -41,6 +44,7 @@ func Provider() terraform.ResourceProvider {
 			"bitbucketserver_project_permissions_user":  resourceProjectPermissionsUser(),
 			"bitbucketserver_repository":                resourceRepository(),
 			"bitbucketserver_user":                      resourceUser(),
+			"bitbucketserver_user_group":                resourceUserGroup(),
 		},
 	}
 }

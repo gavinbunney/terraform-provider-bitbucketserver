@@ -171,6 +171,42 @@ $ terraform import bitbucketserver_user.test mreynolds
 ```
 
 
+### Create a Bitbucket Group
+
+```hcl
+resource "bitbucketserver_group" "browncoats" {
+  name          = "browncoats"
+}
+```
+
+* `name` - Required. Group to create.
+
+#### Import Group
+
+```bash
+$ terraform import bitbucketserver_group.test browncoats
+```
+
+
+### Assign a User to a Bitbucket Group
+
+```hcl
+resource "bitbucketserver_user_group" "browncoat" {
+  user  = "mreynolds"
+  group = "browncoats"
+}
+```
+
+* `user` - Required. User to assign group to.
+* `group` - Required. Group to assign to the user.
+
+#### Import Group
+
+```bash
+$ terraform import bitbucketserver_user_group.browncoat mreynolds/browncoats
+```
+
+
 ### Set Server License
 
 ```hcl
@@ -249,6 +285,39 @@ data "bitbucketserver_application_properties" "main" {}
 * `build_number` - Build number of the Bitbucket instance.
 * `build_date` - Date the Bitbucket build was made,
 * `display_name` - Name of the Bitbucket instance.
+
+
+### Groups
+
+Retrieve a list of groups, optionally matching the supplied `filter`.
+
+```hcl
+data "bitbucketserver_groups" "all" {}
+```
+
+* `filter` - Optional. If specified only group names containing the supplied string will be returned.
+
+#### Attributes
+
+* `groups` - List of maps containing a `name` key.
+
+
+### Users
+
+Retrieve a list of users for a group,optionally matching the supplied `filter`.
+
+```hcl
+data "bitbucketserver_group_users" "stash-users" {
+  group = "stash-users"
+}
+```
+
+* `group` - Required. Group to find the users for.
+* `filter` - Optional. If specified only group names containing the supplied string will be returned.
+
+#### Attributes
+
+* `users` - List of users containing `name`, `email_address`, `display_name` and `active` keys.
 
 
 ### Project Permissions Groups
