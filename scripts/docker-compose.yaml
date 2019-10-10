@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  confluence:
+  bitbucket:
     image: atlassian/bitbucket-server:6.7.0
     restart: always
     networks:
