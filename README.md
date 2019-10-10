@@ -48,6 +48,7 @@ provider "bitbucketserver" {
 
 You can also specify these parameters through the `BITBUCKET_SERVER`, `BITBUCKER_USERNAME` and `BITBUCKET_PASSWORD` environment variables.
 
+
 ### Create a Bitbucket Project
 
 ```hcl
@@ -59,7 +60,7 @@ resource "bitbucketserver_project" "test" {
 }
 ```
 
-* `key` - Required. Project key to set
+* `key` - Required. Project key to set.
 * `name` - Required. Name of the project.
 * `description` - Optional. Description of the project.
 * `avatar` - Optional. Avatar to use containing base64-encoded image data. Format: `data:(content type, e.g. image/png);base64,(data)`
@@ -69,6 +70,28 @@ resource "bitbucketserver_project" "test" {
 ```bash
 $ terraform import bitbucketserver_project.test TEST
 ```
+
+
+### Assign Project Permissions for Group
+
+```hcl
+resource "bitbucketserver_project_permissions_group" "test" {
+  project = "TEST"
+  group = "stash-users"
+  permission = "PROJECT_WRITE"
+}
+```
+
+* `project` - Required. Project key to set permissions for.
+* `group` - Required. Name of the group permissions are for.
+* `permission` - Required. The permission to grant. Available project permissions are: `PROJECT_READ`, `PROJECT_WRITE`, `PROJECT_ADMIN`
+
+#### Import Group Permission for Project
+
+```bash
+$ terraform import bitbucketserver_project_permissions_group.test TEST/stash-users
+```
+
 
 ### Create a Bitbucket Repository
 
@@ -97,6 +120,7 @@ Additional to the above, the following attributes are emitted:
 ```bash
 $ terraform import bitbucketserver_repository.test TEST/test-01
 ```
+
 
 ### Set Server License
 
@@ -130,6 +154,7 @@ Additional to the above, the following attributes are emitted:
 $ terraform import bitbucketserver_admin_license.main license
 ```
 
+
 ### Set Mail Server Configuration
 
 ```hcl
@@ -160,7 +185,10 @@ $ terraform import bitbucketserver_admin_mail_server.mail mail.example.com
 
 ## Data Sources
 
+
 ### Application Properties
+
+Retrieve version information and other application properties.
 
 ```hcl
 data "bitbucketserver_application_properties" "main" {}
@@ -173,13 +201,19 @@ data "bitbucketserver_application_properties" "main" {}
 * `build_date` - Date the Bitbucket build was made,
 * `display_name` - Name of the Bitbucket instance.
 
-### Application Properties
+
+### Project Permissions Groups
+
+Retrieve a list of groups that have been granted at least one permission for the specified project.
 
 ```hcl
 data "bitbucketserver_project_permissions_groups" "proj" {
   project = "TEST"
 }
 ```
+
+* `project` - Required. Project Key to lookup permissions for.
+* `filter` - Optional. If specified only group names containing the supplied string will be returned.
 
 #### Attributes
 

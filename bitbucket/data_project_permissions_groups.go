@@ -6,20 +6,25 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-type ProjectPermissionsGroup struct {
+type PaginatedProjectPermissionsGroupsValue struct {
 	Group struct {
 		Name string `json:"name,omitempty"`
 	} `json:"group,omitempty"`
 	Permission string `json:"permission,omitempty"`
 }
 
+type ProjectPermissionsGroup struct {
+	Name       string
+	Permission string
+}
+
 type PaginatedProjectPermissionsGroups struct {
-	Values        []ProjectPermissionsGroup `json:"values,omitempty"`
-	Size          int                       `json:"size,omitempty"`
-	Limit         int                       `json:"limit,omitempty"`
-	IsLastPage    bool                      `json:"isLastPage,omitempty"`
-	Start         int                       `json:"start,omitempty"`
-	NextPageStart int                       `json:"nextPageStart,omitempty"`
+	Values        []PaginatedProjectPermissionsGroupsValue `json:"values,omitempty"`
+	Size          int                                      `json:"size,omitempty"`
+	Limit         int                                      `json:"limit,omitempty"`
+	IsLastPage    bool                                     `json:"isLastPage,omitempty"`
+	Start         int                                      `json:"start,omitempty"`
+	NextPageStart int                                      `json:"nextPageStart,omitempty"`
 }
 
 func dataSourceProjectPermissionsGroups() *schema.Resource {
@@ -30,6 +35,10 @@ func dataSourceProjectPermissionsGroups() *schema.Resource {
 			"project": {
 				Type:     schema.TypeString,
 				Required: true,
+			},
+			"filter": {
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 			"groups": {
 				Type:     schema.TypeList,
@@ -52,46 +61,74 @@ func dataSourceProjectPermissionsGroups() *schema.Resource {
 }
 
 func dataSourceProjectPermissionsGroupsRead(d *schema.ResourceData, m interface{}) error {
+	groups, err := readProjectPermissionsGroups(m, d.Get("project").(string), d.Get("filter").(string))
+	if err != nil {
+		return err
+	}
+
+	d.SetId(d.Get("project").(string))
+
+	var terraformGroups []interface{}
+	for _, group := range groups {
+		g := make(map[string]interface{})
+		g["name"] = group.Name
+		g["permission"] = group.Permission
+		terraformGroups = append(terraformGroups, g)
+	}
+
+	d.Set("groups", terraformGroups)
+	return nil
+}
+
+func readProjectPermissionsGroups(m interface{}, project string, filter string) ([]ProjectPermissionsGroup, error) {
 	client := m.(*BitbucketClient)
 
 	resourceURL := fmt.Sprintf("/rest/api/1.0/projects/%s/permissions/groups",
-		d.Get("project").(string),
+		project,
 	)
 
+	if filter != "" {
+		resourceURL += "?filter=" + filter
+	}
+
 	var projectGroups PaginatedProjectPermissionsGroups
-	var terraformGroups []interface{}
+	var groups []ProjectPermissionsGroup
 
 	for {
-		reviewersResponse, err := client.Get(resourceURL)
+		resp, err := client.Get(resourceURL)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		decoder := json.NewDecoder(reviewersResponse.Body)
+		decoder := json.NewDecoder(resp.Body)
 		err = decoder.Decode(&projectGroups)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		for _, group := range projectGroups.Values {
-			g := make(map[string]interface{})
-			g["name"] = group.Group.Name
-			g["permission"] = group.Permission
-			terraformGroups = append(terraformGroups, g)
+			g := ProjectPermissionsGroup{
+				Name:       group.Group.Name,
+				Permission: group.Permission,
+			}
+			groups = append(groups, g)
 		}
 
 		if projectGroups.IsLastPage == false {
 			resourceURL = fmt.Sprintf("/rest/api/1.0/projects/%s/permissions/groups?start=%d",
-				d.Get("project").(string),
+				project,
 				projectGroups.NextPageStart,
 			)
+
+			if filter != "" {
+				resourceURL += "&filter=" + filter
+			}
+
 			projectGroups = PaginatedProjectPermissionsGroups{}
 		} else {
 			break
 		}
 	}
 
-	d.SetId(d.Get("project").(string))
-	d.Set("groups", terraformGroups)
-	return nil
+	return groups, nil
 }
