@@ -58,6 +58,7 @@ func (c *BitbucketClient) Do(method, endpoint string, payload *bytes.Buffer) (*h
 	}
 
 	req.SetBasicAuth(c.Username, c.Password)
+	req.Header.Add("X-Atlassian-Token", "no-check")
 
 	if payload != nil {
 		// Can cause bad request when putting default reviews if set.

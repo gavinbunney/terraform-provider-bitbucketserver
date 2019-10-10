@@ -18,9 +18,9 @@ type PaginatedProjectPermissionsUsersValue struct {
 
 type ProjectPermissionsUser struct {
 	Name         string
-	EmailAddress string `json:"emailAddress,omitempty"`
-	DisplayName  string `json:"displayName,omitempty"`
-	Active       bool   `json:"active,omitempty"`
+	EmailAddress string
+	DisplayName  string
+	Active       bool
 	Permission   string
 }
 

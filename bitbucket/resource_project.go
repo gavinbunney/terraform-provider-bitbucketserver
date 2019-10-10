@@ -35,6 +35,7 @@ func resourceProject() *schema.Resource {
 			"key": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"description": {
 				Type:     schema.TypeString,

@@ -40,6 +40,7 @@ func Provider() terraform.ResourceProvider {
 			"bitbucketserver_project_permissions_group": resourceProjectPermissionsGroup(),
 			"bitbucketserver_project_permissions_user":  resourceProjectPermissionsUser(),
 			"bitbucketserver_repository":                resourceRepository(),
+			"bitbucketserver_user":                      resourceUser(),
 		},
 	}
 }

@@ -47,9 +47,15 @@ func TestAccBitbucketDataProjectPermissionsUsers_additional(t *testing.T) {
 			name = "test-repo-for-repository-test"
 		}
 
+		resource "bitbucketserver_user" "mreynolds" {
+		  name          = "mreynolds"
+		  display_name  = "Malcolm Reynolds"
+		  email_address = "browncoat@example.com"
+		}
+
 		resource "bitbucketserver_project_permissions_user" "test" {
 			project = bitbucketserver_project.test.key
-			user = "admin2"
+			user = bitbucketserver_user.mreynolds.name
 			permission = "PROJECT_WRITE"
 		}
 		
@@ -71,9 +77,9 @@ func TestAccBitbucketDataProjectPermissionsUsers_additional(t *testing.T) {
 					resource.TestCheckResourceAttr("data.bitbucketserver_project_permissions_users.test", "users.0.email_address", "admin@example.com"),
 					resource.TestCheckResourceAttr("data.bitbucketserver_project_permissions_users.test", "users.0.active", "true"),
 					resource.TestCheckResourceAttr("data.bitbucketserver_project_permissions_users.test", "users.0.permission", "PROJECT_ADMIN"),
-					resource.TestCheckResourceAttr("data.bitbucketserver_project_permissions_users.test", "users.1.name", "admin2"),
-					resource.TestCheckResourceAttr("data.bitbucketserver_project_permissions_users.test", "users.1.display_name", "Admin 2"),
-					resource.TestCheckResourceAttr("data.bitbucketserver_project_permissions_users.test", "users.1.email_address", "admin2@example.com"),
+					resource.TestCheckResourceAttr("data.bitbucketserver_project_permissions_users.test", "users.1.name", "mreynolds"),
+					resource.TestCheckResourceAttr("data.bitbucketserver_project_permissions_users.test", "users.1.display_name", "Malcolm Reynolds"),
+					resource.TestCheckResourceAttr("data.bitbucketserver_project_permissions_users.test", "users.1.email_address", "browncoat@example.com"),
 					resource.TestCheckResourceAttr("data.bitbucketserver_project_permissions_users.test", "users.1.active", "true"),
 					resource.TestCheckResourceAttr("data.bitbucketserver_project_permissions_users.test", "users.1.permission", "PROJECT_WRITE"),
 				),

@@ -143,6 +143,34 @@ $ terraform import bitbucketserver_repository.test TEST/test-01
 ```
 
 
+### Create a Bitbucket User
+
+```hcl
+resource "bitbucketserver_user" "admin" {
+  name          = "mreynolds"
+  display_name  = "Malcolm Reynolds"
+  email_address = "browncoat@example.com"
+}
+```
+
+* `name` - Required. Username of the user.
+* `display_name` - Required. User's name to display.
+* `email_address` - Required. Email address of user.
+* `password_length` - Optional. The length of the generated password on resource creation. Only applies on resource creation. Default `20`.
+
+#### Attributes
+
+Additional to the above, the following attributes are emitted:
+
+* `initial_password` - The generated user password. Only available if password was handled on Terraform resource creation, not import.
+
+#### Import User
+
+```bash
+$ terraform import bitbucketserver_user.test mreynolds
+```
+
+
 ### Set Server License
 
 ```hcl

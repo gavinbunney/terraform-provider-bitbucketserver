@@ -17,9 +17,15 @@ func TestAccBitbucketResourceProjectPermissionsUser(t *testing.T) {
 			name = "test-repo-for-repository-test"
 		}
 
+		resource "bitbucketserver_user" "mreynolds" {
+		  name          = "mreynolds"
+		  display_name  = "Malcolm Reynolds"
+		  email_address = "browncoat@example.com"
+		}
+
 		resource "bitbucketserver_project_permissions_user" "test" {
 			project = bitbucketserver_project.test.key
-			user = "admin2"
+			user = bitbucketserver_user.mreynolds.name
 			permission = "PROJECT_READ"
 		}
 	`, projectKey)
@@ -31,9 +37,9 @@ func TestAccBitbucketResourceProjectPermissionsUser(t *testing.T) {
 			{
 				Config: config,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("bitbucketserver_project_permissions_user.test", "id", projectKey+"/admin2"),
+					resource.TestCheckResourceAttr("bitbucketserver_project_permissions_user.test", "id", projectKey+"/mreynolds"),
 					resource.TestCheckResourceAttr("bitbucketserver_project_permissions_user.test", "project", projectKey),
-					resource.TestCheckResourceAttr("bitbucketserver_project_permissions_user.test", "user", "admin2"),
+					resource.TestCheckResourceAttr("bitbucketserver_project_permissions_user.test", "user", "mreynolds"),
 					resource.TestCheckResourceAttr("bitbucketserver_project_permissions_user.test", "permission", "PROJECT_READ"),
 				),
 			},

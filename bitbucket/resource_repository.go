@@ -41,6 +41,7 @@ func resourceRepository() *schema.Resource {
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"slug": {
 				Type:     schema.TypeString,
@@ -50,6 +51,7 @@ func resourceRepository() *schema.Resource {
 			"project": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"description": {
 				Type:     schema.TypeString,
