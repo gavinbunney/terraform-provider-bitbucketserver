@@ -93,6 +93,27 @@ $ terraform import bitbucketserver_project_permissions_group.test TEST/stash-use
 ```
 
 
+### Assign Project Permissions for User
+
+```hcl
+resource "bitbucketserver_project_permissions_user" "test" {
+  project = "TEST"
+  user = "admin"
+  permission = "PROJECT_WRITE"
+}
+```
+
+* `project` - Required. Project key to set permissions for.
+* `user` - Required. Name of the user permissions are for.
+* `permission` - Required. The permission to grant. Available project permissions are: `PROJECT_READ`, `PROJECT_WRITE`, `PROJECT_ADMIN`
+
+#### Import Group Permission for Project
+
+```bash
+$ terraform import bitbucketserver_project_permissions_user.test TEST/admin
+```
+
+
 ### Create a Bitbucket Repository
 
 ```hcl
@@ -218,6 +239,24 @@ data "bitbucketserver_project_permissions_groups" "proj" {
 #### Attributes
 
 * `groups` - List of maps containing `name` and `permission` keys.
+
+
+### Project Permissions Users
+
+Retrieve a list of users that have been granted at least one permission for the specified project.
+
+```hcl
+data "bitbucketserver_project_permissions_users" "proj" {
+  project = "TEST"
+}
+```
+
+* `project` - Required. Project Key to lookup permissions for.
+* `filter` - Optional. If specified only user names containing the supplied string will be returned.
+
+#### Attributes
+
+* `users` - List of maps containing `name`, `email_address`, `display_name`, `active` and `permission` keys.
 
 ---
 

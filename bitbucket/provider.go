@@ -31,12 +31,14 @@ func Provider() terraform.ResourceProvider {
 		DataSourcesMap: map[string]*schema.Resource{
 			"bitbucketserver_application_properties":     dataSourceApplicationProperties(),
 			"bitbucketserver_project_permissions_groups": dataSourceProjectPermissionsGroups(),
+			"bitbucketserver_project_permissions_users":  dataSourceProjectPermissionsUsers(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"bitbucketserver_admin_license":             resourceAdminLicense(),
 			"bitbucketserver_admin_mail_server":         resourceAdminMailServer(),
 			"bitbucketserver_project":                   resourceProject(),
 			"bitbucketserver_project_permissions_group": resourceProjectPermissionsGroup(),
+			"bitbucketserver_project_permissions_user":  resourceProjectPermissionsUser(),
 			"bitbucketserver_repository":                resourceRepository(),
 		},
 	}
