@@ -143,6 +143,51 @@ $ terraform import bitbucketserver_repository.test TEST/test-01
 ```
 
 
+### Assign Repository Permissions for Group
+
+```hcl
+resource "bitbucketserver_repository_permissions_group" "test" {
+  project    = "TEST"
+  repository = "my-repo"
+  group      = "stash-users"
+  permission = "REPO_WRITE"
+}
+```
+
+* `project` - Required. Project key to set permissions for.
+* `repository` - Required. Repository slug to set permissions for.
+* `group` - Required. Name of the group permissions are for.
+* `permission` - Required. The permission to grant. Available repository permissions are: `REPO_READ`, `REPO_WRITE`, `REPO_ADMIN`
+
+#### Import Group Permission for Repository
+
+```bash
+$ terraform import bitbucketserver_repository_permissions_group.test TEST/my-repo/stash-users
+```
+
+
+### Assign Repository Permissions for User
+
+```hcl
+resource "bitbucketserver_repository_permissions_user" "test" {
+  project    = "TEST"
+  repository = "my-repo"
+  user       = "admin"
+  permission = "REPO_WRITE"
+}
+```
+
+* `project` - Required. Project key to set permissions for.
+* `user` - Required. Name of the user permissions are for.
+* `permission` - Required. The permission to grant. Available repository permissions are: `REPO_READ`, `REPO_WRITE`, `REPO_ADMIN`
+
+#### Import Group Permission for Repository
+
+```bash
+$ terraform import bitbucketserver_repository_permissions_user.test TEST/my-repo/admin
+```
+
+
 ### Create a Bitbucket User
 
 ```hcl
@@ -404,7 +449,7 @@ data "bitbucketserver_project_permissions_groups" "proj" {
 
 #### Attributes
 
-* `groups` - List of maps containing `name` and `permission` keys.
+* `groups` - List of maps containing `name` and `permission` keys. Available permissions are: `PROJECT_READ`, `PROJECT_WRITE`, `PROJECT_ADMIN`
 
 
 ### Project Permissions - Users
@@ -422,7 +467,47 @@ data "bitbucketserver_project_permissions_users" "proj" {
 
 #### Attributes
 
-* `users` - List of maps containing `name`, `email_address`, `display_name`, `active` and `permission` keys.
+* `users` - List of maps containing `name`, `email_address`, `display_name`, `active` and `permission` keys. Available permissions are: `PROJECT_READ`, `PROJECT_WRITE`, `PROJECT_ADMIN`
+
+
+### Repository Permissions - Groups
+
+Retrieve a list of groups that have been granted at least one permission for the specified repository.
+
+```hcl
+data "bitbucketserver_project_permissions_groups" "proj" {
+  project    = "TEST"
+  repository = "my-repo"
+}
+```
+
+* `project` - Required. Project Key to lookup permissions for.
+* `repository` - Required. Repository slug to lookup permissions for.
+* `filter` - Optional. If specified only group names containing the supplied string will be returned.
+
+#### Attributes
+
+* `groups` - List of maps containing `name` and `permission` keys. Available permissions are: `REPO_READ`, `REPO_WRITE`, `REPO_ADMIN`
+
+
+### Repository Permissions - Users
+
+Retrieve a list of users that have been granted at least one permission for the specified repository.
+
+```hcl
+data "bitbucketserver_project_permissions_users" "proj" {
+  project    = "TEST"
+  repository = "my-repo"
+}
+```
+
+* `project` - Required. Project Key to lookup permissions for.
+* `repository` - Required. Repository slug to lookup permissions for.
+* `filter` - Optional. If specified only user names containing the supplied string will be returned.
+
+#### Attributes
+
+* `users` - List of maps containing `name`, `email_address`, `display_name`, `active` and `permission` keys. Available permissions are: `REPO_READ`, `REPO_WRITE`, `REPO_ADMIN`
 
 ---
 
