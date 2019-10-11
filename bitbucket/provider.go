@@ -34,6 +34,7 @@ func Provider() terraform.ResourceProvider {
 			"bitbucketserver_global_permissions_users":      dataSourceGlobalPermissionsUsers(),
 			"bitbucketserver_groups":                        dataSourceGroups(),
 			"bitbucketserver_group_users":                   dataSourceGroupUsers(),
+			"bitbucketserver_plugin":                        dataSourcePlugin(),
 			"bitbucketserver_project_permissions_groups":    dataSourceProjectPermissionsGroups(),
 			"bitbucketserver_project_permissions_users":     dataSourceProjectPermissionsUsers(),
 			"bitbucketserver_repository_permissions_groups": dataSourceRepositoryPermissionsGroups(),

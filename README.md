@@ -509,6 +509,31 @@ data "bitbucketserver_project_permissions_users" "proj" {
 
 * `users` - List of maps containing `name`, `email_address`, `display_name`, `active` and `permission` keys. Available permissions are: `REPO_READ`, `REPO_WRITE`, `REPO_ADMIN`
 
+
+### Plugin Details
+
+Retrieve details of an installed plugin.
+
+```hcl
+data "bitbucketserver_plugin" "myplugin" {
+  key = "com.atlassian.upm.atlassian-universal-plugin-manager-plugin"
+}
+```
+
+#### Attributes
+
+* `key` - Unique key of the plugin.
+* `enabled` - Set to `true` if the plugin is enabled.
+* `enabled_by_default` - Set to `true` if the plugin is enabled by default (for system plugins). 
+* `version` - Installed version of the plugin. 
+* `name` - Name of the plugin.
+* `description` - Plugin description.
+* `user_installed` - Set to `true` if this is a user installed plugin vs a system bundled plugin.
+* `optional` - Set to `true` if this is an optional plugin.
+* `vendor_name` - Name of the vendor.
+* `vendor_link` - Vendor homepage.
+* `vendor_marketplace_link` - Plugin marketplace link.
+
 ---
 
 ## Development Guide
