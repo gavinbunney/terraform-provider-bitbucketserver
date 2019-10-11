@@ -81,11 +81,6 @@ func TestAccBitbucketDataRepositoryPermissionsUsers_empty(t *testing.T) {
 				Config: config,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.bitbucketserver_repository_permissions_users.test", "users.#", "0"),
-					resource.TestCheckResourceAttr("data.bitbucketserver_repository_permissions_users.test", "users.0.name", "admin"),
-					resource.TestCheckResourceAttr("data.bitbucketserver_repository_permissions_users.test", "users.0.display_name", "Admin"),
-					resource.TestCheckResourceAttr("data.bitbucketserver_repository_permissions_users.test", "users.0.email_address", "admin@example.com"),
-					resource.TestCheckResourceAttr("data.bitbucketserver_repository_permissions_users.test", "users.0.active", "true"),
-					resource.TestCheckResourceAttr("data.bitbucketserver_repository_permissions_users.test", "users.0.permission", "PROJECT_ADMIN"),
 				),
 			},
 		},
