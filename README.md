@@ -530,9 +530,27 @@ data "bitbucketserver_plugin" "myplugin" {
 * `description` - Plugin description.
 * `user_installed` - Set to `true` if this is a user installed plugin vs a system bundled plugin.
 * `optional` - Set to `true` if this is an optional plugin.
-* `vendor_name` - Name of the vendor.
-* `vendor_link` - Vendor homepage.
-* `vendor_marketplace_link` - Plugin marketplace link.
+* `vendor.name` - Name of the vendor.
+* `vendor.link` - Vendor homepage.
+* `vendor.marketplace_link` - Plugin marketplace link.
+* `license.0.valid` - Is the license valid. true/false.
+* `license.0.evaluation` - Is the license an evaluation. true/false.
+* `license.0.nearly_expired` - Is the license nearly expired. true/false.
+* `license.0.maintenance_expiry_date` - Date of maintenance expiry.
+* `license.0.maintenance_expired` - Is the maintenance expired. true/false.
+* `license.0.license_type` - Type of license.
+* `license.0.expiry_date` - Expiry date of the license.
+* `license.0.raw_license` - The raw license information.
+* `license.0.renewable` - Is the license renewabl. true/false.
+* `license.0.organization_name` - Name of the organization the license is for.
+* `license.0.enterprise` - Is the license for enterprise. true/false.
+* `license.0.data_center` - Is the license for data center. true/false.
+* `license.0.subscription` - Is the license a subscription. true/false.
+* `license.0.active` - Is the license active. true/false.
+* `license.0.auto_renewal` - Is the license renewed automatically. true/false.
+* `license.0.upgradable` - Is the license able to be upgraded. true/false.
+* `license.0.crossgradeable` - Can the license be crossgraded. true/false.
+* `license.0.purchase_past_server_cutoff_date` - The purchase date past the server cutoff date. true/false.
 
 ---
 
@@ -540,7 +558,7 @@ data "bitbucketserver_plugin" "myplugin" {
 
 ### Requirements
 
--	[Terraform](https://www.terraform.io/downloads.html) 0.10.x
+-	[Terraform](https://www.terraform.io/downloads.html) 0.12.x
 -	[Go](https://golang.org/doc/install) 1.11 (to build the provider plugin)
 
 ### Building The Provider

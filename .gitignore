@@ -32,3 +32,4 @@ website/vendor
 
 scripts/gogetcookie.sh
 docker-compose
+docker-compose-test-plugin.jar
