@@ -207,6 +207,45 @@ $ terraform import bitbucketserver_user_group.browncoat mreynolds/browncoats
 ```
 
 
+### Assign Global Permissions for Group
+
+```hcl
+resource "bitbucketserver_global_permissions_group" "test" {
+  project = "TEST"
+  group = "stash-users"
+  permission = "ADMIN"
+}
+```
+
+* `group` - Required. Name of the group permissions are for.
+* `permission` - Required. The permission to grant. Available project permissions are: `LICENSED_USER`, `PROJECT_CREATE`, `ADMIN`, `SYS_ADMIN`
+
+#### Import Global Group Permissions
+
+```bash
+$ terraform import bitbucketserver_global_permissions_group.test my-group
+```
+
+
+### Assign Global Permissions for User
+
+```hcl
+resource "bitbucketserver_project_permissions_user" "test" {
+  user = "admin"
+  permission = "ADMIN"
+}
+```
+
+* `user` - Required. Name of the user permissions are for.
+* `permission` - Required. The permission to grant. Available project permissions are: `LICENSED_USER`, `PROJECT_CREATE`, `ADMIN`, `SYS_ADMIN`
+
+#### Import Global Group Permissions
+
+```bash
+$ terraform import bitbucketserver_global_permissions_user.test my-user
+```
+
+
 ### Set Server License
 
 ```hcl
