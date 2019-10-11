@@ -320,7 +320,37 @@ data "bitbucketserver_group_users" "stash-users" {
 * `users` - List of users containing `name`, `email_address`, `display_name` and `active` keys.
 
 
-### Project Permissions Groups
+### Global Permissions - Groups
+
+Retrieve a list of groups that have been granted at least one global permission.
+
+```hcl
+data "bitbucketserver_global_permissions_groups" "all" { }
+```
+
+* `filter` - Optional. If specified only group names containing the supplied string will be returned.
+
+#### Attributes
+
+* `groups` - List of maps containing `name` and `permission` keys. Available permissions are: `LICENSED_USER`, `PROJECT_CREATE`, `ADMIN`, `SYS_ADMIN`
+
+
+### Global Permissions - Users
+
+Retrieve a list of users that have been granted at least one global permission.
+
+```hcl
+data "bitbucketserver_global_permissions_users" "proj" { }
+```
+
+* `filter` - Optional. If specified only user names containing the supplied string will be returned.
+
+#### Attributes
+
+* `users` - List of maps containing `name`, `email_address`, `display_name`, `active` and `permission` keys. Available permissions are: `LICENSED_USER`, `PROJECT_CREATE`, `ADMIN`, `SYS_ADMIN`
+
+
+### Project Permissions - Groups
 
 Retrieve a list of groups that have been granted at least one permission for the specified project.
 
@@ -338,7 +368,7 @@ data "bitbucketserver_project_permissions_groups" "proj" {
 * `groups` - List of maps containing `name` and `permission` keys.
 
 
-### Project Permissions Users
+### Project Permissions - Users
 
 Retrieve a list of users that have been granted at least one permission for the specified project.
 
