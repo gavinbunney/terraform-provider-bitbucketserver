@@ -1,0 +1,10 @@
+{
+  "docs": {
+    "Bitbucket Server": [
+      "provider"
+    ],
+    "Data Resources": [
+      "data_application_properties"
+    ]
+  }
+}
