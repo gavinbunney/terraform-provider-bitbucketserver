@@ -49,6 +49,7 @@ const siteConfig = {
 
   // No .html extensions for paths.
   cleanUrl: true,
+  docsSideNavCollapsible: true,
 };
 
 module.exports = siteConfig;

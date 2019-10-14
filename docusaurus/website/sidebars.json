@@ -3,8 +3,20 @@
     "Bitbucket Server": [
       "provider"
     ],
-    "Data Resources": [
-      "data_application_properties"
+    "Data Sources": [
+      "data_application_properties",
+      "data_global_permissions_groups",
+      "data_global_permissions_users",
+      "data_group_users",
+      "data_groups",
+      "data_plugin",
+      "data_project_permissions_groups",
+      "data_project_permissions_users",
+      "data_repository_permissions_groups",
+      "data_repository_permissions_users"
+    ],
+    "Resources": [
+
     ]
   }
 }

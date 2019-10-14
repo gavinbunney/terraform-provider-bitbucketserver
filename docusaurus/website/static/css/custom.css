@@ -10,9 +10,18 @@
 }
 
 @media only screen and (min-width: 1400px) {
+    .separateOnPageNav .wrapper, .separateOnPageNav .headerWrapper.wrapper {
+        max-width: 1600px;
+    }
 }
 
 @media only screen and (min-width: 1500px) {
+}
+
+@media only screen and (min-width: 1700px) {
+    .separateOnPageNav .wrapper, .separateOnPageNav .headerWrapper.wrapper {
+        max-width: 1800px;
+    }
 }
 
 @media only screen and (min-width: 1024px) {
@@ -23,4 +32,8 @@
 
 body {
     font-family: "Lato", "sans-serif";
+}
+
+.toc .toggleNav ul li a {
+    font-size: 13px;
 }

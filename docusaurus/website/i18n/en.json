@@ -7,6 +7,33 @@
       "data_application_properties": {
         "title": "bitbucketserver_application_properties"
       },
+      "data_global_permissions_groups": {
+        "title": "bitbucketserver_global_permissions_groups"
+      },
+      "data_global_permissions_users": {
+        "title": "bitbucketserver_global_permissions_users"
+      },
+      "data_group_users": {
+        "title": "bitbucketserver_group_users"
+      },
+      "data_groups": {
+        "title": "bitbucketserver_groups"
+      },
+      "data_plugin": {
+        "title": "bitbucketserver_plugin"
+      },
+      "data_project_permissions_groups": {
+        "title": "bitbucketserver_project_permissions_groups"
+      },
+      "data_project_permissions_users": {
+        "title": "bitbucketserver_project_permissions_users"
+      },
+      "data_repository_permissions_groups": {
+        "title": "bitbucketserver_repository_permissions_groups"
+      },
+      "data_repository_permissions_users": {
+        "title": "bitbucketserver_repository_permissions_users"
+      },
       "provider": {
         "title": "Getting Started"
       }
@@ -14,7 +41,8 @@
     "links": {},
     "categories": {
       "Bitbucket Server": "Bitbucket Server",
-      "Data Resources": "Data Resources"
+      "Data Sources": "Data Sources",
+      "Resources": "Resources"
     }
   },
   "pages-strings": {
