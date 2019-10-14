@@ -28,7 +28,7 @@ func TestAccBitbucketDataPlugin_notifyer(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.bitbucketserver_plugin.test", "key", "nl.stefankohler.stash.stash-notification-plugin"),
 					resource.TestCheckResourceAttr("data.bitbucketserver_plugin.test", "enabled", "true"),
-					resource.TestCheckResourceAttr("data.bitbucketserver_plugin.test", "enabled_by_default", "true"),
+					resource.TestCheckResourceAttrSet("data.bitbucketserver_plugin.test", "enabled_by_default"),
 					resource.TestCheckResourceAttrSet("data.bitbucketserver_plugin.test", "version"),
 					resource.TestCheckResourceAttr("data.bitbucketserver_plugin.test", "name", "Notifyr - Notification for Bitbucket"),
 					resource.TestCheckResourceAttr("data.bitbucketserver_plugin.test", "description", "Watch your repositories, branches, and tags and receive email notifications on changes."),
