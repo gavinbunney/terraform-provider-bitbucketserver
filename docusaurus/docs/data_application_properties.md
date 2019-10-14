@@ -1,5 +1,5 @@
 ---
-id: data_application_properties
+id: data_bitbucketserver_application_properties
 title: bitbucketserver_application_properties
 ---
 
@@ -7,7 +7,7 @@ This data source allows you to retrieve version information and other applicatio
 
 ## Example Usage
 
-```
+```hcl
 data "bitbucketserver_application_properties" "main" { }
 ```
 

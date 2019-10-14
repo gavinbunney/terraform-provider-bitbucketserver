@@ -4,19 +4,32 @@
       "provider"
     ],
     "Data Sources": [
-      "data_application_properties",
-      "data_global_permissions_groups",
-      "data_global_permissions_users",
-      "data_group_users",
-      "data_groups",
-      "data_plugin",
-      "data_project_permissions_groups",
-      "data_project_permissions_users",
-      "data_repository_permissions_groups",
-      "data_repository_permissions_users"
+      "data_bitbucketserver_application_properties",
+      "data_bitbucketserver_global_permissions_groups",
+      "data_bitbucketserver_global_permissions_users",
+      "data_bitbucketserver_group_users",
+      "data_bitbucketserver_groups",
+      "data_bitbucketserver_plugin",
+      "data_bitbucketserver_project_permissions_groups",
+      "data_bitbucketserver_project_permissions_users",
+      "data_bitbucketserver_repository_permissions_groups",
+      "data_bitbucketserver_repository_permissions_users"
     ],
     "Resources": [
-
+      "bitbucketserver_global_permissions_group",
+      "bitbucketserver_global_permissions_user",
+      "bitbucketserver_group",
+      "bitbucketserver_license",
+      "bitbucketserver_mail_server",
+      "bitbucketserver_plugin",
+      "bitbucketserver_project",
+      "bitbucketserver_project_permissions_group",
+      "bitbucketserver_project_permissions_user",
+      "bitbucketserver_repository",
+      "bitbucketserver_repository_permissions_group",
+      "bitbucketserver_repository_permissions_user",
+      "bitbucketserver_user",
+      "bitbucketserver_user_group"
     ]
   }
 }

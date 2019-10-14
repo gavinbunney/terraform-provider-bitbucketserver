@@ -1,5 +1,5 @@
 ---
-id: data_global_permissions_users
+id: data_bitbucketserver_global_permissions_users
 title: bitbucketserver_global_permissions_users
 ---
 
@@ -7,7 +7,7 @@ Retrieve a list of users that have been granted at least one global permission.
 
 ## Example Usage
 
-```
+```hcl
 data "bitbucketserver_global_permissions_users" "all" { }
 ```
 
@@ -15,7 +15,7 @@ data "bitbucketserver_global_permissions_users" "all" { }
 
 Find any users starting with `malcolm`.
  
-```
+```hcl
 data "bitbucketserver_global_permissions_users" "malcolms" {
   filter = "malcolm"
 }

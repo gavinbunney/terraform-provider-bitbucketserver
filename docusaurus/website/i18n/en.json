@@ -4,38 +4,80 @@
     "next": "Next",
     "previous": "Previous",
     "docs": {
-      "data_application_properties": {
+      "data_bitbucketserver_application_properties": {
         "title": "bitbucketserver_application_properties"
       },
-      "data_global_permissions_groups": {
+      "data_bitbucketserver_global_permissions_groups": {
         "title": "bitbucketserver_global_permissions_groups"
       },
-      "data_global_permissions_users": {
+      "data_bitbucketserver_global_permissions_users": {
         "title": "bitbucketserver_global_permissions_users"
       },
-      "data_group_users": {
+      "data_bitbucketserver_group_users": {
         "title": "bitbucketserver_group_users"
       },
-      "data_groups": {
+      "data_bitbucketserver_groups": {
         "title": "bitbucketserver_groups"
       },
-      "data_plugin": {
+      "data_bitbucketserver_plugin": {
         "title": "bitbucketserver_plugin"
       },
-      "data_project_permissions_groups": {
+      "data_bitbucketserver_project_permissions_groups": {
         "title": "bitbucketserver_project_permissions_groups"
       },
-      "data_project_permissions_users": {
+      "data_bitbucketserver_project_permissions_users": {
         "title": "bitbucketserver_project_permissions_users"
       },
-      "data_repository_permissions_groups": {
+      "data_bitbucketserver_repository_permissions_groups": {
         "title": "bitbucketserver_repository_permissions_groups"
       },
-      "data_repository_permissions_users": {
+      "data_bitbucketserver_repository_permissions_users": {
         "title": "bitbucketserver_repository_permissions_users"
       },
       "provider": {
         "title": "Getting Started"
+      },
+      "bitbucketserver_global_permissions_group": {
+        "title": "bitbucketserver_global_permissions_group"
+      },
+      "bitbucketserver_global_permissions_user": {
+        "title": "bitbucketserver_global_permissions_user"
+      },
+      "bitbucketserver_group": {
+        "title": "bitbucketserver_group"
+      },
+      "bitbucketserver_license": {
+        "title": "bitbucketserver_license"
+      },
+      "bitbucketserver_mail_server": {
+        "title": "bitbucketserver_mail_server"
+      },
+      "bitbucketserver_plugin": {
+        "title": "bitbucketserver_plugin"
+      },
+      "bitbucketserver_project_permissions_group": {
+        "title": "bitbucketserver_project_permissions_group"
+      },
+      "bitbucketserver_project_permissions_user": {
+        "title": "bitbucketserver_project_permissions_user"
+      },
+      "bitbucketserver_project": {
+        "title": "bitbucketserver_project"
+      },
+      "bitbucketserver_repository_permissions_group": {
+        "title": "bitbucketserver_repository_permissions_group"
+      },
+      "bitbucketserver_repository_permissions_user": {
+        "title": "bitbucketserver_repository_permissions_user"
+      },
+      "bitbucketserver_repository": {
+        "title": "bitbucketserver_repository"
+      },
+      "bitbucketserver_user_group": {
+        "title": "bitbucketserver_user_group"
+      },
+      "bitbucketserver_user": {
+        "title": "bitbucketserver_user"
       }
     },
     "links": {},

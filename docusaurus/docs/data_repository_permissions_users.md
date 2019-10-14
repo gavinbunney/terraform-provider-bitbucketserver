@@ -1,5 +1,5 @@
 ---
-id: data_repository_permissions_users
+id: data_bitbucketserver_repository_permissions_users
 title: bitbucketserver_repository_permissions_users
 ---
 
@@ -7,7 +7,7 @@ Retrieve a list of users that have been granted at least one permission for the 
 
 ## Example Usage
 
-```
+```hcl
 data "bitbucketserver_repository_permissions_users" "my-repo-users" {
   project    = "TEST"
   repository = "my-repo"
@@ -18,7 +18,7 @@ data "bitbucketserver_repository_permissions_users" "my-repo-users" {
 
 Find repository users starting with `malcolm`.
  
-```
+```hcl
 data "bitbucketserver_repository_permissions_users" "my-repo-malcolms" {
   project    = "TEST"
   repository = "my-repo"

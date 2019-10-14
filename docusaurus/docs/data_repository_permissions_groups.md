@@ -1,5 +1,5 @@
 ---
-id: data_repository_permissions_groups
+id: data_bitbucketserver_repository_permissions_groups
 title: bitbucketserver_repository_permissions_groups
 ---
 
@@ -7,7 +7,7 @@ Retrieve a list of groups that have been granted at least one repository level p
 
 ## Example Usage
 
-```
+```hcl
 data "bitbucketserver_repository_permissions_groups" "my-repo-groups" {
   project    = "TEST"
   repository = "my-repo"
@@ -18,7 +18,7 @@ data "bitbucketserver_repository_permissions_groups" "my-repo-groups" {
 
 Find project groups starting with `dev` with project permissions.
  
-```
+```hcl
 data "bitbucketserver_repository_permissions_groups" "my-repo-dev-groups" {
   project = "TEST"
   repository = "my-repo"

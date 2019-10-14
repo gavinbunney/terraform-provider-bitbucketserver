@@ -1,5 +1,5 @@
 ---
-id: data_project_permissions_groups
+id: data_bitbucketserver_project_permissions_groups
 title: bitbucketserver_project_permissions_groups
 ---
 
@@ -7,7 +7,7 @@ Retrieve a list of groups that have been granted at least one project level perm
 
 ## Example Usage
 
-```
+```hcl
 data "bitbucketserver_project_permissions_groups" "test-groups" {
   project = "TEST"
 }
@@ -17,7 +17,7 @@ data "bitbucketserver_project_permissions_groups" "test-groups" {
 
 Find project groups starting with `dev` with project permissions.
  
-```
+```hcl
 data "bitbucketserver_project_permissions_groups" "dev-groups" {
   project = "TEST"
   filter  = "dev"

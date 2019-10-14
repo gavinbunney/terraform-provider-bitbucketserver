@@ -1,5 +1,5 @@
 ---
-id: data_global_permissions_groups
+id: data_bitbucketserver_global_permissions_groups
 title: bitbucketserver_global_permissions_groups
 ---
 
@@ -7,7 +7,7 @@ Retrieve a list of groups that have been granted at least one global permission.
 
 ## Example Usage
 
-```
+```hcl
 data "bitbucketserver_global_permissions_groups" "all" { }
 ```
 
@@ -15,7 +15,7 @@ data "bitbucketserver_global_permissions_groups" "all" { }
 
 Find any groups starting with `dev`.
  
-```
+```hcl
 data "bitbucketserver_global_permissions_groups" "dev-groups" {
   filter = "dev"
 }

@@ -29,6 +29,8 @@ const siteConfig = {
     secondaryColor: '#66246c',
   },
 
+  usePrism: ['yaml', 'js', 'bash', 'sh', 'hcl'],
+
   // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
   copyright: `Copyright © ${new Date().getFullYear()} Gavin Bunney`,
 

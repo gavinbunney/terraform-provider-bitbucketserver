@@ -1,27 +1,30 @@
 ---
-id: data_bitbucketserver_plugin
+id: bitbucketserver_plugin
 title: bitbucketserver_plugin
 ---
 
-This data source allows you to retrieve installed plugin information and license details.
+Install plugins, manage enabled state and set license details.
 
 ## Example Usage
 
 ```hcl
-data "bitbucketserver_plugin" "my-plugin" {
-  key = "com.example.plugin-my-plugin"
+resource "bitbucketserver_plugin" "myplugin" {
+  key     = "com.example-my-plugin"
+  version = "1.2.3"
+  license = "ABCDEF"
 }
 ```
 
 ## Argument Reference
 
-* `key` - Unique key of the plugin.
+* `key` - Required. Unique key of the plugin.
+* `version` - Required. Version to install.
+* `license` - Optional. License to apply to the plugin.
+* `enabled` - Optional, default `true`. Flag to enable/disable the plugin.
 
 ## Attribute Reference
 
-* `enabled` - Set to `true` if the plugin is enabled.
-* `enabled_by_default` - Set to `true` if the plugin is enabled by default (for system plugins). 
-* `version` - Installed version of the plugin. 
+* `enabled_by_default` - Set to `true` if the plugin is enabled by default (for system plugins).  
 * `name` - Name of the plugin.
 * `description` - Plugin description.
 * `user_installed` - Set to `true` if this is a user installed plugin vs a system bundled plugin.
@@ -47,3 +50,11 @@ data "bitbucketserver_plugin" "my-plugin" {
 * `applied_license.0.upgradable` - Is the license able to be upgraded. true/false.
 * `applied_license.0.crossgradeable` - Can the license be crossgraded. true/false.
 * `applied_license.0.purchase_past_server_cutoff_date` - The purchase date past the server cutoff date. true/false.
+
+## Import
+
+Import a plugin reference via the key:
+
+```
+terraform import bitbucketserver_plugin.myplugin com.example-my-plugin
+```

@@ -1,5 +1,5 @@
 ---
-id: data_group_users
+id: data_bitbucketserver_group_users
 title: bitbucketserver_group_users
 ---
 
@@ -7,7 +7,7 @@ Retrieve a list of users for a specific group.
 
 ## Example Usage
 
-```
+```hcl
 data "bitbucketserver_group_users" "stash-users" {
   group = "stash-users"
 }
@@ -17,7 +17,7 @@ data "bitbucketserver_group_users" "stash-users" {
 
 Find any users starting with `malcolm`.
  
-```
+```hcl
 data "bitbucketserver_group_users" "malcolms" {
   group  = "stash-users"
   filter = "malcolm"

@@ -1,5 +1,5 @@
 ---
-id: data_groups
+id: data_bitbucketserver_groups
 title: bitbucketserver_groups
 ---
 
@@ -7,7 +7,7 @@ This data source allows you to retrieve a list of groups, optionally matching th
 
 ## Example Usage
 
-```
+```hcl
 data "bitbucketserver_groups" "all" { }
 ```
 
@@ -15,7 +15,7 @@ data "bitbucketserver_groups" "all" { }
 
 Find any groups starting with `dev`.
  
-```
+```hcl
 data "bitbucketserver_groups" "dev-groups" {
   filter = "dev"
 }
