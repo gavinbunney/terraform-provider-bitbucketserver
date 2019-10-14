@@ -78,7 +78,7 @@ func dataSourceGlobalPermissionsGroupsRead(d *schema.ResourceData, m interface{}
 }
 
 func readGlobalPermissionsGroups(m interface{}, filter string) ([]GlobalPermissionsGroup, error) {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 
 	resourceURL := "/rest/api/1.0/admin/permissions/groups"
 

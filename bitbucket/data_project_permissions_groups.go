@@ -82,7 +82,7 @@ func dataSourceProjectPermissionsGroupsRead(d *schema.ResourceData, m interface{
 }
 
 func readProjectPermissionsGroups(m interface{}, project string, filter string) ([]ProjectPermissionsGroup, error) {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 
 	resourceURL := fmt.Sprintf("/rest/api/1.0/projects/%s/permissions/groups",
 		project,

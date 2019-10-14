@@ -26,7 +26,7 @@ func resourceGroup() *schema.Resource {
 }
 
 func resourceGroupCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 
 	groupName := d.Get("name").(string)
 	_, err := client.Post(fmt.Sprintf("/rest/api/1.0/admin/groups?name=%s", url.QueryEscape(groupName)), nil)
@@ -63,7 +63,7 @@ func resourceGroupRead(d *schema.ResourceData, m interface{}) error {
 
 func resourceGroupDelete(d *schema.ResourceData, m interface{}) error {
 	groupName := d.Get("name").(string)
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/admin/groups?name=%s",
 		url.QueryEscape(groupName),
 	))

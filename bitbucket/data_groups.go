@@ -65,7 +65,7 @@ func dataSourceGroupsRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func readGroups(m interface{}, filter string) ([]string, error) {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 
 	resourceURL := "/rest/api/1.0/admin/groups"
 	if filter != "" {

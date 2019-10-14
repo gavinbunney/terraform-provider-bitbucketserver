@@ -39,7 +39,7 @@ func dataSourceApplicationProperties() *schema.Resource {
 }
 
 func dataSourceApplicationPropertiesRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	req, err := client.Get("/rest/api/1.0/application-properties")
 
 	if err != nil {

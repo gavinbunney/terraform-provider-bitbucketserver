@@ -91,7 +91,7 @@ func newLicenseFromResource(d *schema.ResourceData) *License {
 }
 
 func resourceLicenseUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	license := newLicenseFromResource(d)
 
 	bytedata, err := json.Marshal(license)
@@ -115,7 +115,7 @@ func resourceLicenseCreate(d *schema.ResourceData, m interface{}) error {
 
 func resourceLicenseRead(d *schema.ResourceData, m interface{}) error {
 
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	req, err := client.Get("/rest/api/1.0/admin/license")
 
 	if err != nil {
@@ -152,7 +152,7 @@ func resourceLicenseRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLicenseDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete("/rest/api/1.0/admin/mail-server")
 	return err
 }

@@ -39,7 +39,7 @@ func resourceProjectPermissionsGroup() *schema.Resource {
 }
 
 func resourceProjectPermissionsGroupUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	_, err := client.Put(fmt.Sprintf("/rest/api/1.0/projects/%s/permissions/groups?permission=%s&name=%s",
 		d.Get("project").(string),
 		url.QueryEscape(d.Get("permission").(string)),
@@ -93,7 +93,7 @@ func resourceProjectPermissionsGroupRead(d *schema.ResourceData, m interface{}) 
 }
 
 func resourceProjectPermissionsGroupDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/projects/%s/permissions/groups?name=%s",
 		d.Get("project").(string),
 		url.QueryEscape(d.Get("group").(string)),

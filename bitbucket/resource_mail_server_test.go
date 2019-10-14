@@ -36,7 +36,7 @@ func TestAccBitbucketMailServer(t *testing.T) {
 }
 
 func testAccCheckBitbucketMailServerDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*BitbucketClient)
+	client := testAccProvider.Meta().(*BitbucketServerProvider).BitbucketClient
 	_, ok := s.RootModule().Resources["bitbucketserver_mail_server.test"]
 	if !ok {
 		return fmt.Errorf("not found %s", "bitbucketserver_mail_server.test")

@@ -107,7 +107,7 @@ func dataSourceRepositoryPermissionsUsersRead(d *schema.ResourceData, m interfac
 }
 
 func readRepositoryPermissionsUsers(m interface{}, project string, repository string, filter string) ([]RepositoryPermissionsUser, error) {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 
 	resourceURL := fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/permissions/users",
 		url.QueryEscape(project),

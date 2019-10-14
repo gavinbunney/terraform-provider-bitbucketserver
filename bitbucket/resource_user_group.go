@@ -47,7 +47,7 @@ func newUserGroupFromResource(d *schema.ResourceData) *UserGroup {
 }
 
 func resourceUserGroupCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 
 	type UserGroupRequest struct {
 		User   string   `json:"user,omitempty"`
@@ -110,7 +110,7 @@ func resourceUserGroupDelete(d *schema.ResourceData, m interface{}) error {
 
 	userGroup := newUserGroupFromResource(d)
 
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 
 	type RemoveRequest struct {
 		User  string `json:"context,omitempty"`

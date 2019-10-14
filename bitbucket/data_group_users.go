@@ -94,7 +94,7 @@ func dataSourceGroupUsersRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func readGroupUsers(m interface{}, group string, filter string) ([]GroupUser, error) {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 
 	resourceURL := fmt.Sprintf("/rest/api/1.0/admin/groups/more-members?context=%s",
 		url.QueryEscape(group),

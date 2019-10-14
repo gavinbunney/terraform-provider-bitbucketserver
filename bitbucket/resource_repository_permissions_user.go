@@ -44,7 +44,7 @@ func resourceRepositoryPermissionsUser() *schema.Resource {
 }
 
 func resourceRepositoryPermissionsUserUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	_, err := client.Put(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/permissions/users?permission=%s&name=%s",
 		url.QueryEscape(d.Get("project").(string)),
 		url.QueryEscape(d.Get("repository").(string)),
@@ -100,7 +100,7 @@ func resourceRepositoryPermissionsUserRead(d *schema.ResourceData, m interface{}
 }
 
 func resourceRepositoryPermissionsUserDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/permissions/users?name=%s",
 		url.QueryEscape(d.Get("project").(string)),
 		url.QueryEscape(d.Get("repository").(string)),

@@ -67,7 +67,7 @@ func newProjectFromResource(d *schema.ResourceData) *Project {
 }
 
 func resourceProjectUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	project := newProjectFromResource(d)
 
 	bytedata, err := json.Marshal(project)
@@ -88,7 +88,7 @@ func resourceProjectUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceProjectCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	project := newProjectFromResource(d)
 
 	bytedata, err := json.Marshal(project)
@@ -116,7 +116,7 @@ func resourceProjectRead(d *schema.ResourceData, m interface{}) error {
 
 	project := d.Get("key").(string)
 
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	project_req, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s",
 		project,
 	))
@@ -158,7 +158,7 @@ func resourceProjectExists(d *schema.ResourceData, m interface{}) (bool, error) 
 		project = d.Get("key").(string)
 	}
 
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	repo_req, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s",
 		project,
 	))
@@ -176,7 +176,7 @@ func resourceProjectExists(d *schema.ResourceData, m interface{}) (bool, error) 
 
 func resourceProjectDelete(d *schema.ResourceData, m interface{}) error {
 	project := d.Get("key").(string)
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/projects/%s",
 		project,
 	))

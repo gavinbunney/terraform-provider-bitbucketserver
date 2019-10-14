@@ -92,7 +92,7 @@ func newRepositoryFromResource(d *schema.ResourceData) (Repo *Repository, Projec
 }
 
 func resourceRepositoryUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	repo, project := newRepositoryFromResource(d)
 
 	bytedata, err := json.Marshal(repo)
@@ -116,7 +116,7 @@ func resourceRepositoryUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceRepositoryCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	repo, project := newRepositoryFromResource(d)
 
 	bytedata, err := json.Marshal(repo)
@@ -153,7 +153,7 @@ func resourceRepositoryRead(d *schema.ResourceData, m interface{}) error {
 	repoSlug := determineSlug(d)
 	project := d.Get("project").(string)
 
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	repo_req, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s",
 		project,
 		repoSlug,
@@ -212,7 +212,7 @@ func resourceRepositoryExists(d *schema.ResourceData, m interface{}) (bool, erro
 		}
 	}
 
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	repo_req, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s",
 		project,
 		repoSlug,
@@ -232,7 +232,7 @@ func resourceRepositoryExists(d *schema.ResourceData, m interface{}) (bool, erro
 func resourceRepositoryDelete(d *schema.ResourceData, m interface{}) error {
 	repoSlug := determineSlug(d)
 	project := d.Get("project").(string)
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s",
 		project,
 		repoSlug,

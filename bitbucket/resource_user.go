@@ -84,7 +84,7 @@ func newUserFromResource(d *schema.ResourceData) *User {
 }
 
 func resourceUserUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	user := newUserFromResource(d)
 
 	bytedata, err := json.Marshal(user)
@@ -105,7 +105,7 @@ func resourceUserUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceUserCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	user := newUserFromResource(d)
 
 	passwordLength := d.Get("password_length").(int)
@@ -136,7 +136,7 @@ func resourceUserRead(d *schema.ResourceData, m interface{}) error {
 
 	name := d.Get("name").(string)
 
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	req, err := client.Get(fmt.Sprintf("/rest/api/1.0/users/%s",
 		url.QueryEscape(name),
 	))
@@ -176,7 +176,7 @@ func resourceUserExists(d *schema.ResourceData, m interface{}) (bool, error) {
 		name = d.Get("name").(string)
 	}
 
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	req, err := client.Get(fmt.Sprintf("/rest/api/1.0/users/%s",
 		url.QueryEscape(name),
 	))
@@ -194,7 +194,7 @@ func resourceUserExists(d *schema.ResourceData, m interface{}) (bool, error) {
 
 func resourceUserDelete(d *schema.ResourceData, m interface{}) error {
 	name := d.Get("name").(string)
-	client := m.(*BitbucketClient)
+	client := m.(*BitbucketServerProvider).BitbucketClient
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/admin/users?name=%s",
 		url.QueryEscape(name),
 	))

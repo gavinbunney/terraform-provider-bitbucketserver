@@ -1,6 +1,7 @@
 package bitbucket
 
 import (
+	"github.com/gavinbunney/terraform-provider-bitbucketserver/bitbucket/marketplace"
 	"net/http"
 	"strings"
 
@@ -46,6 +47,7 @@ func Provider() terraform.ResourceProvider {
 			"bitbucketserver_group":                        resourceGroup(),
 			"bitbucketserver_license":                      resourceLicense(),
 			"bitbucketserver_mail_server":                  resourceMailServer(),
+			"bitbucketserver_plugin":                       resourcePlugin(),
 			"bitbucketserver_project":                      resourceProject(),
 			"bitbucketserver_project_permissions_group":    resourceProjectPermissionsGroup(),
 			"bitbucketserver_project_permissions_user":     resourceProjectPermissionsUser(),
@@ -58,6 +60,11 @@ func Provider() terraform.ResourceProvider {
 	}
 }
 
+type BitbucketServerProvider struct {
+	BitbucketClient   *BitbucketClient
+	MarketplaceClient *marketplace.Client
+}
+
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 	serverSanitized := d.Get("server").(string)
@@ -65,12 +72,19 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		serverSanitized = serverSanitized[0 : len(serverSanitized)-1]
 	}
 
-	client := &BitbucketClient{
+	b := &BitbucketClient{
 		Server:     serverSanitized,
 		Username:   d.Get("username").(string),
 		Password:   d.Get("password").(string),
 		HTTPClient: &http.Client{},
 	}
 
-	return client, nil
+	m := &marketplace.Client{
+		HTTPClient: &http.Client{},
+	}
+
+	return &BitbucketServerProvider{
+		BitbucketClient:   b,
+		MarketplaceClient: m,
+	}, nil
 }

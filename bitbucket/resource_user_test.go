@@ -39,7 +39,7 @@ func TestAccBitbucketUser(t *testing.T) {
 }
 
 func testAccCheckBitbucketUserDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*BitbucketClient)
+	client := testAccProvider.Meta().(*BitbucketServerProvider).BitbucketClient
 	rs, ok := s.RootModule().Resources["bitbucketserver_user.test"]
 	if !ok {
 		return fmt.Errorf("not found %s", "bitbucketserver_user.test")
