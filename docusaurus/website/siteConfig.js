@@ -12,10 +12,7 @@ const siteConfig = {
   title: 'Bitbucket Server Terraform Provider',
 
   url: 'https://gavinbunney.github.io',
-  baseUrl: '/',
-  // baseUrl: '/terraform-provider-bitbucketserver/',
-
-  // Used for publishing and more
+  baseUrl: '/terraform-provider-bitbucketserver/',
   projectName: 'terraform-provider-bitbucketserver',
   organizationName: 'gavinbunney',
 
