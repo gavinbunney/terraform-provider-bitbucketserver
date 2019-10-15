@@ -24,9 +24,22 @@ provider "bitbucketserver" {
 }
 ```
 
-You can also specify these parameters through the `BITBUCKET_SERVER`, `BITBUCKER_USERNAME` and `BITBUCKET_PASSWORD` environment variables.
+### Authentication
 
-## Creating a Project and Repository
+The `username` and `password` specified should be of a user with sufficient privileges to perform the operations you are after.
+Typically this is a user with `SYS_ADMIN` global permissions.
+
+### Environment Variables
+
+You can also specify the provider configuration using the following env vars:
+
+* `BITBUCKET_SERVER`
+* `BITBUCKER_USERNAME`
+* `BITBUCKET_PASSWORD`
+
+> Note: The hcl provider configuration takes precedence over the environment variables.
+
+## Example - Creating a Project and Repository
 
 Creating a project and repository is super simple with this provider:
 
@@ -45,7 +58,7 @@ resource "bitbucketserver_project" "test" {
 
 resource "bitbucketserver_repository" "test" {
   project     = bitbucketserver_project.test.key
-  name        = "test-01"
+  name        = "repo-01"
   description = "Test repository"
 }
 ```

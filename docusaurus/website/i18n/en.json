@@ -7,6 +7,9 @@
       "data_bitbucketserver_application_properties": {
         "title": "bitbucketserver_application_properties"
       },
+      "data_bitbucketserver_cluster": {
+        "title": "bitbucketserver_cluster"
+      },
       "data_bitbucketserver_global_permissions_groups": {
         "title": "bitbucketserver_global_permissions_groups"
       },
@@ -36,6 +39,9 @@
       },
       "provider": {
         "title": "Getting Started"
+      },
+      "bitbucketserver_banner": {
+        "title": "bitbucketserver_banner"
       },
       "bitbucketserver_global_permissions_group": {
         "title": "bitbucketserver_global_permissions_group"

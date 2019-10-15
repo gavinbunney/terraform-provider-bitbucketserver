@@ -5,6 +5,7 @@
     ],
     "Data Sources": [
       "data_bitbucketserver_application_properties",
+      "data_bitbucketserver_cluster",
       "data_bitbucketserver_global_permissions_groups",
       "data_bitbucketserver_global_permissions_users",
       "data_bitbucketserver_group_users",
@@ -16,6 +17,7 @@
       "data_bitbucketserver_repository_permissions_users"
     ],
     "Resources": [
+      "bitbucketserver_banner",
       "bitbucketserver_global_permissions_group",
       "bitbucketserver_global_permissions_user",
       "bitbucketserver_group",

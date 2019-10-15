@@ -31,6 +31,7 @@ func Provider() terraform.ResourceProvider {
 		ConfigureFunc: providerConfigure,
 		DataSourcesMap: map[string]*schema.Resource{
 			"bitbucketserver_application_properties":        dataSourceApplicationProperties(),
+			"bitbucketserver_cluster":                       dataSourceCluster(),
 			"bitbucketserver_global_permissions_groups":     dataSourceGlobalPermissionsGroups(),
 			"bitbucketserver_global_permissions_users":      dataSourceGlobalPermissionsUsers(),
 			"bitbucketserver_groups":                        dataSourceGroups(),
@@ -42,6 +43,7 @@ func Provider() terraform.ResourceProvider {
 			"bitbucketserver_repository_permissions_users":  dataSourceRepositoryPermissionsUsers(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
+			"bitbucketserver_banner":                       resourceBanner(),
 			"bitbucketserver_global_permissions_group":     resourceGlobalPermissionsGroup(),
 			"bitbucketserver_global_permissions_user":      resourceGlobalPermissionsUser(),
 			"bitbucketserver_group":                        resourceGroup(),
