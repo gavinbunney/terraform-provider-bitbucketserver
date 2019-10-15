@@ -25,6 +25,9 @@
       "data_bitbucketserver_plugin": {
         "title": "bitbucketserver_plugin"
       },
+      "data_bitbucketserver_project_hooks": {
+        "title": "bitbucketserver_project_hooks"
+      },
       "data_bitbucketserver_project_permissions_groups": {
         "title": "bitbucketserver_project_permissions_groups"
       },

@@ -11,6 +11,7 @@
       "data_bitbucketserver_group_users",
       "data_bitbucketserver_groups",
       "data_bitbucketserver_plugin",
+      "data_bitbucketserver_project_hooks",
       "data_bitbucketserver_project_permissions_groups",
       "data_bitbucketserver_project_permissions_users",
       "data_bitbucketserver_repository_permissions_groups",
