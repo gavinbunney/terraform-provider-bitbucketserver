@@ -8,18 +8,23 @@ import (
 	"strings"
 )
 
-func resourceProjectHook() *schema.Resource {
+func resourceRepositoryHook() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceProjectHookCreate,
-		Update: resourceProjectHookUpdate,
-		Read:   resourceProjectHookRead,
-		Delete: resourceProjectHookDelete,
+		Create: resourceRepositoryHookCreate,
+		Update: resourceRepositoryHookUpdate,
+		Read:   resourceRepositoryHookRead,
+		Delete: resourceRepositoryHookDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
 			"project": {
+				Type:     schema.TypeString,
+				Required: true,
+				ForceNew: true,
+			},
+			"repository": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
@@ -37,10 +42,11 @@ func resourceProjectHook() *schema.Resource {
 	}
 }
 
-func resourceProjectHookUpdate(d *schema.ResourceData, m interface{}) error {
+func resourceRepositoryHookUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketServerProvider).BitbucketClient
 
 	project := d.Get("project").(string)
+	repository := d.Get("repository").(string)
 	hook := d.Get("hook").(string)
 	settings := d.Get("settings").(map[string]interface{})
 
@@ -49,8 +55,9 @@ func resourceProjectHookUpdate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	_, err = client.Put(fmt.Sprintf("/rest/api/1.0/projects/%s/settings/hooks/%s/enabled",
+	_, err = client.Put(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/settings/hooks/%s/enabled",
 		project,
+		repository,
 		hook,
 	), bytes.NewBuffer(settingsJson))
 
@@ -58,37 +65,40 @@ func resourceProjectHookUpdate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	return resourceProjectHookRead(d, m)
+	return resourceRepositoryHookRead(d, m)
 }
 
-func resourceProjectHookCreate(d *schema.ResourceData, m interface{}) error {
-	err := resourceProjectHookUpdate(d, m)
+func resourceRepositoryHookCreate(d *schema.ResourceData, m interface{}) error {
+	err := resourceRepositoryHookUpdate(d, m)
 	if err != nil {
 		return err
 	}
 
-	d.SetId(fmt.Sprintf("%s/%s", d.Get("project").(string), d.Get("hook").(string)))
-	return resourceProjectHookRead(d, m)
+	d.SetId(fmt.Sprintf("%s/%s/%s", d.Get("project").(string), d.Get("repository").(string), d.Get("hook").(string)))
+	return resourceRepositoryHookRead(d, m)
 }
 
-func resourceProjectHookRead(d *schema.ResourceData, m interface{}) error {
+func resourceRepositoryHookRead(d *schema.ResourceData, m interface{}) error {
 	id := d.Id()
 	if id != "" {
 		parts := strings.Split(id, "/")
-		if len(parts) == 2 {
+		if len(parts) == 3 {
 			_ = d.Set("project", parts[0])
-			_ = d.Set("hook", parts[1])
+			_ = d.Set("repository", parts[1])
+			_ = d.Set("hook", parts[2])
 		} else {
-			return fmt.Errorf("incorrect ID format, should match `project/hook`")
+			return fmt.Errorf("incorrect ID format, should match `project/repository/hook`")
 		}
 	}
 
 	project := d.Get("project").(string)
+	repository := d.Get("repository").(string)
 	hook := d.Get("hook").(string)
 
 	client := m.(*BitbucketServerProvider).BitbucketClient
-	resp, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/settings/hooks/%s/settings",
+	resp, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/settings/hooks/%s/settings",
 		project,
+		repository,
 		hook,
 	))
 
@@ -108,10 +118,11 @@ func resourceProjectHookRead(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceProjectHookDelete(d *schema.ResourceData, m interface{}) error {
+func resourceRepositoryHookDelete(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketServerProvider).BitbucketClient
-	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/projects/%s/settings/hooks/%s/enabled",
+	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/settings/hooks/%s/enabled",
 		d.Get("project").(string),
+		d.Get("repository").(string),
 		d.Get("hook").(string)))
 
 	return err

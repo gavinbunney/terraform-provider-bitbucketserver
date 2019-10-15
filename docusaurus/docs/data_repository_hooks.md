@@ -1,18 +1,19 @@
 ---
-id: data_bitbucketserver_project_hooks
-title: bitbucketserver_project_hooks
+id: data_bitbucketserver_repository_hooks
+title: bitbucketserver_repository_hooks
 ---
 
-Retrieve a list of project hooks and their status' for the specified project.
+Retrieve a list of repository hooks and their status' for the specified repo.
 
 ## Example Usage
 
 ```hcl
-data "bitbucketserver_project_hooks" "main" {
-  project = "TEST"
+data "bitbucketserver_repository_hooks" "main" {
+  project    = "TEST"
+  repository = "repo1"
 }
 
-#  data.bitbucketserver_project_hooks.main.hooks = [{
+#  data.bitbucketserver_repository_hooks.main.hooks = [{
 #     "key"         = "com.atlassian.bitbucket.server.bitbucket-bundled-hooks:force-push-hook",
 #     "name"        = "Reject Force Push",
 #     "type"        = "PRE_RECEIVE",
@@ -21,24 +22,26 @@ data "bitbucketserver_project_hooks" "main" {
 #     "scope_types" = ["PROJECT", "REPOSITORY"],
 #     "enabled"     = "false",
 #     "configured"  = "false",
-#     "scope_type"  = "PROJECT",
+#     "scope_type"  = "REPOSITORY",
 #  }]
 ```
 
 ### Applying a Custom Filter
 
-Find specific types of project hooks.
+Find specific types of repository hooks.
  
 ```hcl
 data "bitbucketserver_project_hooks" "main" {
-  project = "TEST"
-  type    = "PRE_RECEIVE"
+  project    = "TEST"
+  repository = "repo1"
+  type       = "PRE_RECEIVE"
 }
 ```
 
 ## Argument Reference
 
-* `project` - Required. Project Key to lookup hooks for.
+* `project` - Required. Project Key the repository is contained within.
+* `repository` - Required. Repository slug to lookup hooks for.
 * `type` - Optional. Type of hook to find. Must be one of `PRE_RECEIVE`, `POST_RECEIVE`
 
 ## Attribute Reference
@@ -53,5 +56,5 @@ data "bitbucketserver_project_hooks" "main" {
     * `scope_types` - List of strings containing the scopes available for this hook, e.g. `["PROJECT", "REPOSITORY"]`
     * `enabled` - Set if this hook is enabled for this project
     * `configured` - Set if the hook is configured for this project 
-    * `scope_type` - Type of scope applied for this hook, e.g. `PROJECT`
+    * `scope_type` - Type of scope applied for this hook, e.g. `REPOSITORY`
     * `scope_resource_id` - Reference ID of the applied scope, e.g. `1`

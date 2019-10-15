@@ -34,6 +34,9 @@
       "data_bitbucketserver_project_permissions_users": {
         "title": "bitbucketserver_project_permissions_users"
       },
+      "data_bitbucketserver_repository_hooks": {
+        "title": "bitbucketserver_repository_hooks"
+      },
       "data_bitbucketserver_repository_permissions_groups": {
         "title": "bitbucketserver_repository_permissions_groups"
       },
@@ -75,6 +78,9 @@
       },
       "bitbucketserver_project": {
         "title": "bitbucketserver_project"
+      },
+      "bitbucketserver_repository_hook": {
+        "title": "bitbucketserver_repository_hook"
       },
       "bitbucketserver_repository_permissions_group": {
         "title": "bitbucketserver_repository_permissions_group"
