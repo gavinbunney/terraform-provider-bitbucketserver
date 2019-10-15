@@ -91,6 +91,9 @@
       "bitbucketserver_repository": {
         "title": "bitbucketserver_repository"
       },
+      "bitbucketserver_user_access_token": {
+        "title": "bitbucketserver_user_access_token"
+      },
       "bitbucketserver_user_group": {
         "title": "bitbucketserver_user_group"
       },

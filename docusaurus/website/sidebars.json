@@ -35,6 +35,7 @@
       "bitbucketserver_repository_permissions_group",
       "bitbucketserver_repository_permissions_user",
       "bitbucketserver_user",
+      "bitbucketserver_user_access_token",
       "bitbucketserver_user_group"
     ]
   }
