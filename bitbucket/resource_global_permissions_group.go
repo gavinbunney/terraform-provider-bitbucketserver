@@ -85,9 +85,5 @@ func resourceGlobalPermissionsGroupDelete(d *schema.ResourceData, m interface{})
 		url.QueryEscape(d.Get("group").(string)),
 	))
 
-	if err != nil {
-		return err
-	}
-
-	return resourceGlobalPermissionsGroupRead(d, m)
+	return err
 }

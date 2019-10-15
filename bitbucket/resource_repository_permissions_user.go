@@ -107,9 +107,5 @@ func resourceRepositoryPermissionsUserDelete(d *schema.ResourceData, m interface
 		url.QueryEscape(d.Get("user").(string)),
 	))
 
-	if err != nil {
-		return err
-	}
-
-	return resourceRepositoryPermissionsUserRead(d, m)
+	return err
 }

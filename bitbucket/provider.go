@@ -52,6 +52,7 @@ func Provider() terraform.ResourceProvider {
 			"bitbucketserver_mail_server":                  resourceMailServer(),
 			"bitbucketserver_plugin":                       resourcePlugin(),
 			"bitbucketserver_project":                      resourceProject(),
+			"bitbucketserver_project_hook":                 resourceProjectHook(),
 			"bitbucketserver_project_permissions_group":    resourceProjectPermissionsGroup(),
 			"bitbucketserver_project_permissions_user":     resourceProjectPermissionsUser(),
 			"bitbucketserver_repository":                   resourceRepository(),

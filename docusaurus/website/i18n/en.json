@@ -64,6 +64,9 @@
       "bitbucketserver_plugin": {
         "title": "bitbucketserver_plugin"
       },
+      "bitbucketserver_project_hook": {
+        "title": "bitbucketserver_project_hook"
+      },
       "bitbucketserver_project_permissions_group": {
         "title": "bitbucketserver_project_permissions_group"
       },
