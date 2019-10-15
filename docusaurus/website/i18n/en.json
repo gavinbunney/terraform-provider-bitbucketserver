@@ -86,7 +86,10 @@
         "title": "bitbucketserver_user"
       }
     },
-    "links": {},
+    "links": {
+      "Releases": "Releases",
+      "GitHub": "GitHub"
+    },
     "categories": {
       "Bitbucket Server": "Bitbucket Server",
       "Data Sources": "Data Sources",

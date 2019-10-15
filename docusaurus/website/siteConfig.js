@@ -16,8 +16,12 @@ const siteConfig = {
   projectName: 'terraform-provider-bitbucketserver',
   organizationName: 'gavinbunney',
 
+  editUrl: 'https://github.com/gavinbunney/terraform-provider-bitbucketserver/edit/master/docusaurus/docs/',
+
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
+    { href: "https://github.com/gavinbunney/terraform-provider-bitbucketserver/releases", label: "Releases" },
+    { href: "https://github.com/gavinbunney/terraform-provider-bitbucketserver", label: "GitHub" },
   ],
 
   /* path to images for header/footer */
