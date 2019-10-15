@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/helper/validation"
 	"net/url"
+	"sort"
 )
 
 type PaginatedRepositoryHooksValue struct {
@@ -174,6 +175,7 @@ func readRepositoryHooks(m interface{}, project string, repository string, typeF
 		}
 
 		for _, hook := range repositoryHooks.Values {
+			sort.Strings(hook.Details.ScopeTypes)
 			h := RepositoryHook{
 				Key:             hook.Details.Key,
 				Name:            hook.Details.Name,
