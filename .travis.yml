@@ -35,7 +35,6 @@ deploy:
     secure: oB4MFNo958H/bknOkG+yTQ68V0A95xRJPk8xUIrfbL+n1OJIaR3577YpVi64I/kYCxSdjSh3c99p1DP7+hKBDF8B7CQ+slVtAGh5zQ6cWsv5PDX3CWN26fixIUV2/uTdn1FWDrW9a+2JVfhBfoW/H68KtdPp6L7ZD4cgUHRlgO9buzw0Nxvuom7Aii4lg0LyxjbqEckubR/tExVu3P0k16W8LVv/ZnI7P6oqsczgGJvn4EOZw1KiKprhmdTuWELBDr9ShjMBFCyi04cSn/Ar7JG9DPUE1xxo1MNmHvckGBzFXbYOTKik3qQ0olwG3XeAhyoNIfce3siWjVIfPm9F2491sAbCXka5H7UmJkqw7k6eR4UtrS6Zeolti/4ioT/7rJcyO438Za6xYQmtkBPBCE2mAWSw/b42QGbsi5PPnRBYID5Solx+74Fx855/TMqJXpHm6Qq3/+zIatBRbVqyzzJsdI8rUA6gqudE4DN9w50qOYENP2WxodbORuzW7wZzK0Eyl2XkzJ1osfr824eM7FekUZqyIDhH9VnD044itqcE5xhYI1mz84AY0vGCPB0DbJZH+qrM9e39huL/CoauN/FgOBFoH9e/g5K+bTSZSUFKh3BIG6moBNS8apDoa5+c8c7/A3U2Ero2F4Y6v2sLK36w7sCUmhyPHPowAwZf7yw=
   file_glob: true
   file: bin/*
-  body: ${BODY}
   on:
     repo: gavinbunney/terraform-provider-bitbucketserver
     tags: true
