@@ -139,11 +139,10 @@ func resourceProjectRead(d *schema.ResourceData, m interface{}) error {
 			return decodeerr
 		}
 
-		d.Set("name", project.Name)
-		d.Set("key", project.Key)
-		d.Set("description", project.Description)
-		d.Set("public", project.Public)
-		d.Set("avatar", project.Avatar)
+		_ = d.Set("name", project.Name)
+		_ = d.Set("key", project.Key)
+		_ = d.Set("description", project.Description)
+		_ = d.Set("public", project.Public)
 	}
 
 	return nil
