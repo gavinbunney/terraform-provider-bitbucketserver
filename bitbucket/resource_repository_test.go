@@ -71,6 +71,38 @@ func TestAccBitbucketRepository_namewithspaces(t *testing.T) {
 	})
 }
 
+func TestAccBitbucketRepository_gitlfs(t *testing.T) {
+	var repo Repository
+
+	key := fmt.Sprintf("%v", rand.New(rand.NewSource(time.Now().UnixNano())).Int())
+	testAccBitbucketRepositoryConfig := fmt.Sprintf(`
+		resource "bitbucketserver_project" "test" {
+			key = "TEST%v"
+			name = "Test%v"
+		}
+
+		resource "bitbucketserver_repository" "test_repo" {
+			project = bitbucketserver_project.test.key
+			name = "test-repo-for-repository-test"
+			enable_git_lfs = true
+		}
+	`, key, key)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckBitbucketRepositoryDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccBitbucketRepositoryConfig,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckBitbucketRepositoryExists("bitbucketserver_repository.test_repo", &repo),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckBitbucketRepositoryDestroy(s *terraform.State) error {
 	client := testAccProvider.Meta().(*BitbucketServerProvider).BitbucketClient
 	rs, ok := s.RootModule().Resources["bitbucketserver_repository.test_repo"]

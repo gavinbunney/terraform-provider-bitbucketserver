@@ -67,6 +67,11 @@ func resourceRepository() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
+			"enable_git_lfs": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 			"clone_ssh": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -112,12 +117,18 @@ func resourceRepositoryUpdate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
+	err = handleRepositoryGitLFSChanges(client, project, repoSlug, d)
+	if err != nil {
+		return err
+	}
+
 	return resourceRepositoryRead(d, m)
 }
 
 func resourceRepositoryCreate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketServerProvider).BitbucketClient
 	repo, project := newRepositoryFromResource(d)
+	repoSlug := determineSlug(d)
 
 	bytedata, err := json.Marshal(repo)
 
@@ -135,7 +146,39 @@ func resourceRepositoryCreate(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId(string(fmt.Sprintf("%s/%s", project, repo.Name)))
 
+	err = handleRepositoryGitLFSChanges(client, project, repoSlug, d)
+	if err != nil {
+		return err
+	}
+
 	return resourceRepositoryRead(d, m)
+}
+
+func handleRepositoryGitLFSChanges(client *BitbucketClient, project string, repoSlug string, d *schema.ResourceData) error {
+	enableGitLFS := d.Get("enable_git_lfs").(bool)
+	if (d.IsNewResource() && enableGitLFS) || d.HasChange("enable_git_lfs") {
+		if enableGitLFS {
+			_, err := client.Put(fmt.Sprintf("/rest/git-lfs/admin/projects/%s/repos/%s/enabled",
+				project,
+				repoSlug,
+			), nil)
+
+			if err != nil {
+				return err
+			}
+		} else {
+			_, err := client.Delete(fmt.Sprintf("/rest/git-lfs/admin/projects/%s/repos/%s/enabled",
+				project,
+				repoSlug,
+			))
+
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 func resourceRepositoryRead(d *schema.ResourceData, m interface{}) error {
@@ -143,8 +186,8 @@ func resourceRepositoryRead(d *schema.ResourceData, m interface{}) error {
 	if id != "" {
 		idparts := strings.Split(id, "/")
 		if len(idparts) == 2 {
-			d.Set("project", idparts[0])
-			d.Set("slug", idparts[1])
+			_ = d.Set("project", idparts[0])
+			_ = d.Set("slug", idparts[1])
 		} else {
 			return fmt.Errorf("incorrect ID format, should match `project/slug`")
 		}
@@ -177,21 +220,27 @@ func resourceRepositoryRead(d *schema.ResourceData, m interface{}) error {
 			return decodeerr
 		}
 
-		d.Set("name", repo.Name)
+		_ = d.Set("name", repo.Name)
 		if repo.Slug != "" && repo.Name != repo.Slug {
-			d.Set("slug", repo.Slug)
+			_ = d.Set("slug", repo.Slug)
 		}
-		d.Set("description", repo.Description)
-		d.Set("forkable", repo.Forkable)
-		d.Set("public", repo.Public)
+		_ = d.Set("description", repo.Description)
+		_ = d.Set("forkable", repo.Forkable)
+		_ = d.Set("public", repo.Public)
 
 		for _, clone_url := range repo.Links.Clone {
 			if clone_url.Name == "http" {
-				d.Set("clone_https", clone_url.Href)
+				_ = d.Set("clone_https", clone_url.Href)
 			} else {
-				d.Set("clone_ssh", clone_url.Href)
+				_ = d.Set("clone_ssh", clone_url.Href)
 			}
 		}
+
+		gifLFS, err := client.Get(fmt.Sprintf("/rest/git-lfs/admin/projects/%s/repos/%s/enabled",
+			project,
+			repoSlug,
+		))
+		_ = d.Set("enable_git_lfs", err == nil && gifLFS.StatusCode == 200)
 	}
 
 	return nil

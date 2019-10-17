@@ -23,6 +23,7 @@ resource "bitbucketserver_repository" "test" {
 * `description` - Optional. Description of the repository.
 * `forkable` - Optional. Enable/disable forks of this repository. Default `true`
 * `public` - Optional. Determine if this repository is public. Default `false`
+* `enable_git_lfs` - Optional. Enable git-lfs for this repository. Default `false`
 
 ## Attribute Reference
 
