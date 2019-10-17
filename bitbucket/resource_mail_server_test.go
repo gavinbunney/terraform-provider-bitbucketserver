@@ -17,6 +17,8 @@ func TestAccBitbucketMailServer(t *testing.T) {
 			use_start_tls = true
 			require_start_tls = true
 			sender_address = "test@example.com"
+			username = "me"
+			password = "pass"
 		}
 	`
 

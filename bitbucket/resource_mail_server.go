@@ -132,14 +132,13 @@ func resourceMailServerRead(d *schema.ResourceData, m interface{}) error {
 			return decodeerr
 		}
 
-		d.Set("hostname", mailConfiguration.Hostname)
-		d.Set("port", mailConfiguration.Port)
-		d.Set("protocol", mailConfiguration.Protocol)
-		d.Set("use_start_tls", mailConfiguration.UseStartTLS)
-		d.Set("require_start_tls", mailConfiguration.RequireStartTLS)
-		d.Set("username", mailConfiguration.Username)
-		d.Set("password", mailConfiguration.Password)
-		d.Set("sender_address", mailConfiguration.SenderAddress)
+		_ = d.Set("hostname", mailConfiguration.Hostname)
+		_ = d.Set("port", mailConfiguration.Port)
+		_ = d.Set("protocol", mailConfiguration.Protocol)
+		_ = d.Set("use_start_tls", mailConfiguration.UseStartTLS)
+		_ = d.Set("require_start_tls", mailConfiguration.RequireStartTLS)
+		_ = d.Set("username", mailConfiguration.Username)
+		_ = d.Set("sender_address", mailConfiguration.SenderAddress)
 	}
 
 	return nil
