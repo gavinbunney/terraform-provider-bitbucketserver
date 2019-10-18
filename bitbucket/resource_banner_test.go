@@ -7,9 +7,14 @@ import (
 )
 
 func TestAccBitbucketBanner_basic(t *testing.T) {
-	testAccBitbucketBannerConfig := `
+	config := `
 		resource "bitbucketserver_banner" "test" {
 			message = "Test Banner\n*bold*"
+		}`
+
+	configModified := `
+		resource "bitbucketserver_banner" "test" {
+			message = "Test Banner changed"
 		}
 	`
 
@@ -18,9 +23,17 @@ func TestAccBitbucketBanner_basic(t *testing.T) {
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccBitbucketBannerConfig,
+				Config: config,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("bitbucketserver_banner.test", "message", "Test Banner\n*bold*"),
+					resource.TestCheckResourceAttr("bitbucketserver_banner.test", "enabled", "true"),
+					resource.TestCheckResourceAttr("bitbucketserver_banner.test", "audience", "ALL"),
+				),
+			},
+			{
+				Config: configModified,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("bitbucketserver_banner.test", "message", "Test Banner changed"),
 					resource.TestCheckResourceAttr("bitbucketserver_banner.test", "enabled", "true"),
 					resource.TestCheckResourceAttr("bitbucketserver_banner.test", "audience", "ALL"),
 				),
@@ -30,7 +43,7 @@ func TestAccBitbucketBanner_basic(t *testing.T) {
 }
 
 func TestAccBitbucketBanner_authenticated(t *testing.T) {
-	testAccBitbucketBannerConfig := `
+	config := `
 		resource "bitbucketserver_banner" "test" {
 			message  = "Test Banner\n*bold*"
 			audience = "AUTHENTICATED"
@@ -42,7 +55,7 @@ func TestAccBitbucketBanner_authenticated(t *testing.T) {
 		Providers: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccBitbucketBannerConfig,
+				Config: config,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("bitbucketserver_banner.test", "message", "Test Banner\n*bold*"),
 					resource.TestCheckResourceAttr("bitbucketserver_banner.test", "audience", "AUTHENTICATED"),

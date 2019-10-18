@@ -2,6 +2,7 @@ package bitbucket
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform/helper/resource"
@@ -9,7 +10,7 @@ import (
 )
 
 func TestAccBitbucketMailServer(t *testing.T) {
-	testAccBitbucketMailServerConfig := `
+	config := `
 		resource "bitbucketserver_mail_server" "test" {
 			hostname = "mail.example.com"
 			port = 465
@@ -22,15 +23,25 @@ func TestAccBitbucketMailServer(t *testing.T) {
 		}
 	`
 
+	configModified := strings.ReplaceAll(config, "test@example.com", "test-updated@example.com")
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
 		CheckDestroy: testAccCheckBitbucketMailServerDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccBitbucketMailServerConfig,
+				Config: config,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckBitbucketMailServerExists("bitbucketserver_mail_server.test"),
+					resource.TestCheckResourceAttr("bitbucketserver_mail_server.test", "sender_address", "test@example.com"),
+				),
+			},
+			{
+				Config: configModified,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckBitbucketMailServerExists("bitbucketserver_mail_server.test"),
+					resource.TestCheckResourceAttr("bitbucketserver_mail_server.test", "sender_address", "test-updated@example.com"),
 				),
 			},
 		},

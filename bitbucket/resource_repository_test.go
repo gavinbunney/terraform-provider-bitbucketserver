@@ -3,6 +3,7 @@ package bitbucket
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 	"testing"
 	"time"
 
@@ -13,7 +14,7 @@ import (
 func TestAccBitbucketRepository_basic(t *testing.T) {
 	var repo Repository
 
-	testAccBitbucketRepositoryConfig := fmt.Sprintf(`
+	config := fmt.Sprintf(`
 		resource "bitbucketserver_project" "test" {
 			key = "TEST%v"
 			name = "test-repo-for-repository-test"
@@ -22,8 +23,11 @@ func TestAccBitbucketRepository_basic(t *testing.T) {
 		resource "bitbucketserver_repository" "test_repo" {
 			project = bitbucketserver_project.test.key
 			name = "test-repo-for-repository-test"
+			description = "My Repo"
 		}
 	`, rand.New(rand.NewSource(time.Now().UnixNano())).Int())
+
+	configModified := strings.ReplaceAll(config, "My Repo", "My Updated Repo")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -31,9 +35,21 @@ func TestAccBitbucketRepository_basic(t *testing.T) {
 		CheckDestroy: testAccCheckBitbucketRepositoryDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccBitbucketRepositoryConfig,
+				Config: config,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckBitbucketRepositoryExists("bitbucketserver_repository.test_repo", &repo),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "slug", "test-repo-for-repository-test"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "name", "test-repo-for-repository-test"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "description", "My Repo"),
+				),
+			},
+			{
+				Config: configModified,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckBitbucketRepositoryExists("bitbucketserver_repository.test_repo", &repo),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "slug", "test-repo-for-repository-test"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "name", "test-repo-for-repository-test"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "description", "My Updated Repo"),
 				),
 			},
 		},

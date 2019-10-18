@@ -3,6 +3,7 @@ package bitbucket
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 	"testing"
 	"time"
 
@@ -36,6 +37,8 @@ func TestAccBitbucketResourceRepositoryPermissionsUser(t *testing.T) {
 		}
 	`, projectKey, projectKey)
 
+	configModified := strings.ReplaceAll(config, "REPO_WRITE", "REPO_READ")
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
@@ -48,6 +51,16 @@ func TestAccBitbucketResourceRepositoryPermissionsUser(t *testing.T) {
 					resource.TestCheckResourceAttr("bitbucketserver_repository_permissions_user.test", "repository", "test"),
 					resource.TestCheckResourceAttr("bitbucketserver_repository_permissions_user.test", "user", "mreynolds"),
 					resource.TestCheckResourceAttr("bitbucketserver_repository_permissions_user.test", "permission", "REPO_WRITE"),
+				),
+			},
+			{
+				Config: configModified,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("bitbucketserver_repository_permissions_user.test", "id", projectKey+"/test/mreynolds"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository_permissions_user.test", "project", projectKey),
+					resource.TestCheckResourceAttr("bitbucketserver_repository_permissions_user.test", "repository", "test"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository_permissions_user.test", "user", "mreynolds"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository_permissions_user.test", "permission", "REPO_READ"),
 				),
 			},
 		},

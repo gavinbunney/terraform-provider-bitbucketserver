@@ -3,6 +3,7 @@ package bitbucket
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 	"testing"
 	"time"
 
@@ -22,6 +23,8 @@ func TestAccBitbucketResourceGlobalPermissionsGroup(t *testing.T) {
 		}
 	`, groupName)
 
+	configModified := strings.ReplaceAll(config, "ADMIN", "LICENSED_USER")
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
@@ -32,6 +35,14 @@ func TestAccBitbucketResourceGlobalPermissionsGroup(t *testing.T) {
 					resource.TestCheckResourceAttr("bitbucketserver_global_permissions_group.test", "id", groupName),
 					resource.TestCheckResourceAttr("bitbucketserver_global_permissions_group.test", "group", groupName),
 					resource.TestCheckResourceAttr("bitbucketserver_global_permissions_group.test", "permission", "ADMIN"),
+				),
+			},
+			{
+				Config: configModified,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("bitbucketserver_global_permissions_group.test", "id", groupName),
+					resource.TestCheckResourceAttr("bitbucketserver_global_permissions_group.test", "group", groupName),
+					resource.TestCheckResourceAttr("bitbucketserver_global_permissions_group.test", "permission", "LICENSED_USER"),
 				),
 			},
 		},

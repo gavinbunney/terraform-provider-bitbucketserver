@@ -3,6 +3,7 @@ package bitbucket
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 	"testing"
 	"time"
 
@@ -11,14 +12,17 @@ import (
 )
 
 func TestAccBitbucketProject(t *testing.T) {
-	testAccBitbucketProjectConfig := fmt.Sprintf(`
+	projectKey := fmt.Sprintf("TEST%v", rand.New(rand.NewSource(time.Now().UnixNano())).Int())
+	config := fmt.Sprintf(`
 		resource "bitbucketserver_project" "test" {
-			key = "TEST%v"
+			key = "%v"
 			name = "test-repo-for-repository-test"
 			description = "My description"
 			avatar = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="
 		}
-	`, rand.New(rand.NewSource(time.Now().UnixNano())).Int())
+	`, projectKey)
+
+	configModified := strings.ReplaceAll(config, "My description", "My updated description")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -26,9 +30,19 @@ func TestAccBitbucketProject(t *testing.T) {
 		CheckDestroy: testAccCheckBitbucketProjectDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccBitbucketProjectConfig,
+				Config: config,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckBitbucketProjectExists("bitbucketserver_project.test"),
+					resource.TestCheckResourceAttr("bitbucketserver_project.test", "key", projectKey),
+					resource.TestCheckResourceAttr("bitbucketserver_project.test", "description", "My description"),
+				),
+			},
+			{
+				Config: configModified,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckBitbucketProjectExists("bitbucketserver_project.test"),
+					resource.TestCheckResourceAttr("bitbucketserver_project.test", "key", projectKey),
+					resource.TestCheckResourceAttr("bitbucketserver_project.test", "description", "My updated description"),
 				),
 			},
 		},

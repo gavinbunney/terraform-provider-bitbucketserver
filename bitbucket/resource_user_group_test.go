@@ -18,7 +18,6 @@ func TestAccBitbucketResourceUserGroup_basic(t *testing.T) {
 			group = "stash-users"
 		}
 	`
-
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
