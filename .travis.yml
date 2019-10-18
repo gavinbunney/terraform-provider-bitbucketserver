@@ -20,6 +20,9 @@ script:
   - make build
   - BITBUCKET_SERVER=http://localhost:7990 BITBUCKET_USERNAME=admin BITBUCKET_PASSWORD=admin make testacc
 
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
 matrix:
   fast_finish: true
   allow_failures:

@@ -35,3 +35,4 @@ docker-compose
 docker-compose-test-plugin.jar
 node_modules/
 docusaurus/website/build/
+coverage.txt

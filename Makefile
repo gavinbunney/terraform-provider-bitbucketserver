@@ -3,6 +3,8 @@ GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 PKG_NAME=bitbucket
 export GO111MODULE=on
 
+export TESTARGS=-race -coverprofile=coverage.txt -covermode=atomic
+
 export BITBUCKET_SERVER=http://localhost:7990
 export BITBUCKET_USERNAME=admin
 export BITBUCKET_PASSWORD=admin
