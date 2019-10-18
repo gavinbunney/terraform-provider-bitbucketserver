@@ -18,6 +18,12 @@ type User struct {
 	DisplayName  string `json:"displayName,omitempty"`
 }
 
+type UserUpdate struct {
+	Name         string `json:"name,omitempty"`
+	EmailAddress string `json:"email,omitempty"`
+	DisplayName  string `json:"displayName,omitempty"`
+}
+
 func resourceUser() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceUserCreate,
@@ -83,9 +89,19 @@ func newUserFromResource(d *schema.ResourceData) *User {
 	return user
 }
 
+func newUserUpdateFromResource(d *schema.ResourceData) *UserUpdate {
+	user := &UserUpdate{
+		Name:         d.Get("name").(string),
+		EmailAddress: d.Get("email_address").(string),
+		DisplayName:  d.Get("display_name").(string),
+	}
+
+	return user
+}
+
 func resourceUserUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketServerProvider).BitbucketClient
-	user := newUserFromResource(d)
+	user := newUserUpdateFromResource(d)
 
 	bytedata, err := json.Marshal(user)
 
@@ -93,9 +109,7 @@ func resourceUserUpdate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	_, err = client.Put(fmt.Sprintf("/rest/api/1.0/admin/users/%s",
-		user.Name,
-	), bytes.NewBuffer(bytedata))
+	_, err = client.Put("/rest/api/1.0/admin/users", bytes.NewBuffer(bytedata))
 
 	if err != nil {
 		return err
