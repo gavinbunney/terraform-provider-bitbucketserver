@@ -33,7 +33,6 @@ func TestAccBitbucketResourceRepositoryPermissionsGroup(t *testing.T) {
 
 	configModified := strings.ReplaceAll(config, "REPO_WRITE", "REPO_READ")
 
-
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: testAccProviders,
