@@ -26,6 +26,18 @@ type Repository struct {
 	} `json:"links,omitempty"`
 }
 
+type ForkRepositoryRequestBody struct {
+	Name        string `json:"name,omitempty"`
+	Slug        string `json:"slug,omitempty"`
+	Description string `json:"description,omitempty"`
+	Forkable    bool   `json:"forkable,omitempty"`
+	Public      bool   `json:"public,omitempty"`
+	Links       struct {
+		Clone []CloneUrl `json:"clone,omitempty"`
+	} `json:"links,omitempty"`
+	Project Project `json:"project,omitempty"`
+}
+
 func resourceRepository() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceRepositoryCreate,
@@ -67,6 +79,11 @@ func resourceRepository() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
+			"origin_slug_to_fork": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  false,
+			},
 			"enable_git_lfs": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -84,7 +101,7 @@ func resourceRepository() *schema.Resource {
 	}
 }
 
-func newRepositoryFromResource(d *schema.ResourceData) (Repo *Repository, Project string) {
+func newRepositoryFromResource(d *schema.ResourceData) (Repo *Repository) {
 	repo := &Repository{
 		Name:        d.Get("name").(string),
 		Slug:        d.Get("slug").(string),
@@ -93,12 +110,26 @@ func newRepositoryFromResource(d *schema.ResourceData) (Repo *Repository, Projec
 		Public:      d.Get("public").(bool),
 	}
 
-	return repo, d.Get("project").(string)
+	return repo
+}
+
+func newForkedRepositoryFromResource(d *schema.ResourceData) (Repo *ForkRepositoryRequestBody) {
+	req := &ForkRepositoryRequestBody{
+		Name:        d.Get("name").(string),
+		Slug:        d.Get("slug").(string),
+		Description: d.Get("description").(string),
+		Forkable:    d.Get("forkable").(bool),
+		Public:      d.Get("public").(bool),
+		Project:     Project{Key: d.Get("project").(string)},
+	}
+
+	return req
 }
 
 func resourceRepositoryUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketServerProvider).BitbucketClient
-	repo, project := newRepositoryFromResource(d)
+	project := d.Get("project").(string)
+	repo := newRepositoryFromResource(d)
 
 	bytedata, err := json.Marshal(repo)
 
@@ -127,31 +158,60 @@ func resourceRepositoryUpdate(d *schema.ResourceData, m interface{}) error {
 
 func resourceRepositoryCreate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketServerProvider).BitbucketClient
-	repo, project := newRepositoryFromResource(d)
+
+	project := d.Get("project").(string)
 	repoSlug := determineSlug(d)
+	name := d.Get("name").(string)
 
-	bytedata, err := json.Marshal(repo)
-
-	if err != nil {
-		return err
+	forkSlug := d.Get("fork_slug").(string)
+	if forkSlug != "" {
+		err := createForkRepository(client, d, project, forkSlug)
+		if err != nil {
+			return err
+		}
+	} else {
+		err := createNewRepository(client, d, project)
+		if err != nil {
+			return err
+		}
 	}
 
-	_, err = client.Post(fmt.Sprintf("/rest/api/1.0/projects/%s/repos",
-		project,
-	), bytes.NewBuffer(bytedata))
+	d.SetId(string(fmt.Sprintf("%s/%s", project, name)))
 
-	if err != nil {
-		return err
-	}
-
-	d.SetId(string(fmt.Sprintf("%s/%s", project, repo.Name)))
-
-	err = handleRepositoryGitLFSChanges(client, project, repoSlug, d)
+	err := handleRepositoryGitLFSChanges(client, project, repoSlug, d)
 	if err != nil {
 		return err
 	}
 
 	return resourceRepositoryRead(d, m)
+}
+
+func createNewRepository(client *BitbucketClient, d *schema.ResourceData, project string) error {
+	repo := newRepositoryFromResource(d)
+	bytedata, err := json.Marshal(repo)
+	if err != nil {
+		return err
+	}
+	_, err = client.Post(fmt.Sprintf("/rest/api/1.0/projects/%s/repos",
+		project,
+	), bytes.NewBuffer(bytedata))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func createForkRepository(client *BitbucketClient, d *schema.ResourceData, project string, forkSlug string) error {
+	requestBody := newForkedRepositoryFromResource(d)
+	bytedata, err := json.Marshal(requestBody)
+	if err != nil {
+		return err
+	}
+	_, err = client.Post(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s", project, forkSlug), bytes.NewBuffer(bytedata))
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func handleRepositoryGitLFSChanges(client *BitbucketClient, project string, repoSlug string, d *schema.ResourceData) error {
