@@ -31,8 +31,8 @@ type RepositoryForkProject struct {
 }
 
 type RepositoryFork struct {
-	Name        string `json:"name,omitempty"`
-	Project     RepositoryForkProject `json:"project,omitempty"`
+	Name    string                `json:"name,omitempty"`
+	Project RepositoryForkProject `json:"project,omitempty"`
 }
 
 func resourceRepository() *schema.Resource {
@@ -208,7 +208,7 @@ func createNewRepositoryFromFork(client *BitbucketClient, d *schema.ResourceData
 	requestBody := &RepositoryFork{
 		Name: repository,
 		Project: RepositoryForkProject{
-			Key:forkProject,
+			Key: forkProject,
 		},
 	}
 
