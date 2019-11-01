@@ -15,6 +15,17 @@ resource "bitbucketserver_repository" "test" {
 }
 ```
 
+###### if you want to fork an existing repository in the same project
+
+```hcl
+resource "bitbucketserver_repository" "test" {
+  project     = "MYPROJ"
+  name        = "test-01"
+  description = "Test repository"
+  origin_slug_to_fork = "MYOLDPROJ"
+}
+```
+
 ## Argument Reference
 
 * `project` - Required. Name of the project to create the repository in.
@@ -24,7 +35,7 @@ resource "bitbucketserver_repository" "test" {
 * `forkable` - Optional. Enable/disable forks of this repository. Default `true`
 * `public` - Optional. Determine if this repository is public. Default `false`
 * `enable_git_lfs` - Optional. Enable git-lfs for this repository. Default `false`
-
+* `origin_slug_to_fork` - Optional. Use this to fork an expisting repository in the same project. Default `false`
 ## Attribute Reference
 
 Additional to the above, the following attributes are emitted:
