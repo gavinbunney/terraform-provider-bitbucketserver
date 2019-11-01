@@ -27,7 +27,7 @@ resource "bitbucketserver_repository" "test" {
 }
 ```
 
-> Note: Both `fork_repositiroy_project` and `fork_repository_slug` are required to specified the origin repository to fork.
+> Note: Both `fork_repository_project` and `fork_repository_slug` are required to specified the origin repository to fork.
 
 ## Argument Reference
 
