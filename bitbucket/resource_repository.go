@@ -26,16 +26,13 @@ type Repository struct {
 	} `json:"links,omitempty"`
 }
 
-type ForkRepositoryRequestBody struct {
+type RepositoryForkProject struct {
+	Key string `json:"key,omitempty"`
+}
+
+type RepositoryFork struct {
 	Name        string `json:"name,omitempty"`
-	Slug        string `json:"slug,omitempty"`
-	Description string `json:"description,omitempty"`
-	Forkable    bool   `json:"forkable,omitempty"`
-	Public      bool   `json:"public,omitempty"`
-	Links       struct {
-		Clone []CloneUrl `json:"clone,omitempty"`
-	} `json:"links,omitempty"`
-	Project Project `json:"project,omitempty"`
+	Project     RepositoryForkProject `json:"project,omitempty"`
 }
 
 func resourceRepository() *schema.Resource {
@@ -79,10 +76,15 @@ func resourceRepository() *schema.Resource {
 				Optional: true,
 				Default:  false,
 			},
-			"origin_slug_to_fork": {
+			"fork_repository_project": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default:  false,
+				ForceNew: true,
+			},
+			"fork_repository_slug": {
+				Type:     schema.TypeString,
+				Optional: true,
+				ForceNew: true,
 			},
 			"enable_git_lfs": {
 				Type:     schema.TypeBool,
@@ -111,19 +113,6 @@ func newRepositoryFromResource(d *schema.ResourceData) (Repo *Repository) {
 	}
 
 	return repo
-}
-
-func newForkedRepositoryFromResource(d *schema.ResourceData) (Repo *ForkRepositoryRequestBody) {
-	req := &ForkRepositoryRequestBody{
-		Name:        d.Get("name").(string),
-		Slug:        d.Get("slug").(string),
-		Description: d.Get("description").(string),
-		Forkable:    d.Get("forkable").(bool),
-		Public:      d.Get("public").(bool),
-		Project:     Project{Key: d.Get("project").(string)},
-	}
-
-	return req
 }
 
 func resourceRepositoryUpdate(d *schema.ResourceData, m interface{}) error {
@@ -163,9 +152,14 @@ func resourceRepositoryCreate(d *schema.ResourceData, m interface{}) error {
 	repoSlug := determineSlug(d)
 	name := d.Get("name").(string)
 
-	forkSlug := d.Get("fork_slug").(string)
-	if forkSlug != "" {
-		err := createForkRepository(client, d, project, forkSlug)
+	forkProject := d.Get("fork_repository_project").(string)
+	forkRepo := d.Get("fork_repository_slug").(string)
+	if (forkProject != "" && forkRepo == "") || (forkRepo != "" && forkProject == "") {
+		return fmt.Errorf("both fork_repository_project and fork_repository_slug need to be specified when forking an existing repository")
+	}
+
+	if forkProject != "" {
+		err := createNewRepositoryFromFork(client, d, project, repoSlug, forkProject, forkRepo)
 		if err != nil {
 			return err
 		}
@@ -183,34 +177,51 @@ func resourceRepositoryCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	return resourceRepositoryRead(d, m)
+	if forkProject != "" {
+		// after forking a repository, run the update loop to update any names/descriptions etc of the forked repo
+		return resourceRepositoryUpdate(d, m)
+	} else {
+		return resourceRepositoryRead(d, m)
+	}
 }
 
 func createNewRepository(client *BitbucketClient, d *schema.ResourceData, project string) error {
 	repo := newRepositoryFromResource(d)
 	bytedata, err := json.Marshal(repo)
+
 	if err != nil {
 		return err
 	}
+
 	_, err = client.Post(fmt.Sprintf("/rest/api/1.0/projects/%s/repos",
 		project,
 	), bytes.NewBuffer(bytedata))
+
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
-func createForkRepository(client *BitbucketClient, d *schema.ResourceData, project string, forkSlug string) error {
-	requestBody := newForkedRepositoryFromResource(d)
+func createNewRepositoryFromFork(client *BitbucketClient, d *schema.ResourceData, project string, repository string, forkProject string, forkRepository string) error {
+	requestBody := &RepositoryFork{
+		Name: repository,
+		Project: RepositoryForkProject{
+			Key:forkProject,
+		},
+	}
+
 	bytedata, err := json.Marshal(requestBody)
 	if err != nil {
 		return err
 	}
-	_, err = client.Post(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s", project, forkSlug), bytes.NewBuffer(bytedata))
+
+	_, err = client.Post(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s", forkProject, forkRepository), bytes.NewBuffer(bytedata))
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 

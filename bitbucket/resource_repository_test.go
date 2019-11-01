@@ -87,6 +87,59 @@ func TestAccBitbucketRepository_namewithspaces(t *testing.T) {
 	})
 }
 
+func TestAccBitbucketRepository_fork(t *testing.T) {
+	var repo Repository
+
+	config := fmt.Sprintf(`
+		resource "bitbucketserver_project" "test" {
+			key = "TEST%v"
+			name = "Test-%v"
+		}
+
+		resource "bitbucketserver_repository" "test_repo" {
+			project = bitbucketserver_project.test.key
+			name = "test-repo-for-repository-test"
+			description = "My Repo"
+		}
+
+		resource "bitbucketserver_repository" "test_fork" {
+			project = bitbucketserver_repository.test_repo.project
+			name = "My Fork"
+			description = "My Repo Forked"
+			fork_repository_project = bitbucketserver_repository.test_repo.project
+			fork_repository_slug = bitbucketserver_repository.test_repo.slug
+		}
+	`, rand.New(rand.NewSource(time.Now().UnixNano())).Int(), rand.New(rand.NewSource(time.Now().UnixNano())).Int())
+
+	configModified := strings.ReplaceAll(config, "My Repo Forked", "My Updated Repo Forked")
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckBitbucketRepositoryDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckBitbucketRepositoryExists("bitbucketserver_repository.test_fork", &repo),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_fork", "slug", "my-fork"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_fork", "name", "My Fork"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_fork", "description", "My Repo Forked"),
+				),
+			},
+			{
+				Config: configModified,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckBitbucketRepositoryExists("bitbucketserver_repository.test_fork", &repo),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_fork", "slug", "my-fork"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_fork", "name", "My Fork"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_fork", "description", "My Updated Repo Forked"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccBitbucketRepository_gitlfs(t *testing.T) {
 	var repo Repository
 
