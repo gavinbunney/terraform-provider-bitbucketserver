@@ -64,6 +64,9 @@
       "bitbucketserver_mail_server": {
         "title": "bitbucketserver_mail_server"
       },
+      "bitbucketserver_plugin_config": {
+        "title": "bitbucketserver_plugin_config"
+      },
       "bitbucketserver_plugin": {
         "title": "bitbucketserver_plugin"
       },

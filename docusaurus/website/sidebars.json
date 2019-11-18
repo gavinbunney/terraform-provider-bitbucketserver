@@ -26,6 +26,7 @@
       "bitbucketserver_license",
       "bitbucketserver_mail_server",
       "bitbucketserver_plugin",
+      "bitbucketserver_plugin_config",
       "bitbucketserver_project",
       "bitbucketserver_project_hook",
       "bitbucketserver_project_permissions_group",
