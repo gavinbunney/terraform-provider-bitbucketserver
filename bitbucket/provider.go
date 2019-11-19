@@ -1,9 +1,10 @@
 package bitbucket
 
 import (
-	"github.com/gavinbunney/terraform-provider-bitbucketserver/bitbucket/marketplace"
 	"net/http"
 	"strings"
+
+	"github.com/gavinbunney/terraform-provider-bitbucketserver/bitbucket/marketplace"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
@@ -37,6 +38,7 @@ func Provider() terraform.ResourceProvider {
 			"bitbucketserver_groups":                        dataSourceGroups(),
 			"bitbucketserver_group_users":                   dataSourceGroupUsers(),
 			"bitbucketserver_plugin":                        dataSourcePlugin(),
+			"bitbucketserver_plugin_config":                 dataSourcePluginConfig(),
 			"bitbucketserver_project_hooks":                 dataSourceProjectHooks(),
 			"bitbucketserver_project_permissions_groups":    dataSourceProjectPermissionsGroups(),
 			"bitbucketserver_project_permissions_users":     dataSourceProjectPermissionsUsers(),
@@ -52,6 +54,7 @@ func Provider() terraform.ResourceProvider {
 			"bitbucketserver_license":                      resourceLicense(),
 			"bitbucketserver_mail_server":                  resourceMailServer(),
 			"bitbucketserver_plugin":                       resourcePlugin(),
+			"bitbucketserver_plugin_config":                resourcePluginConfig(),
 			"bitbucketserver_project":                      resourceProject(),
 			"bitbucketserver_project_hook":                 resourceProjectHook(),
 			"bitbucketserver_project_permissions_group":    resourceProjectPermissionsGroup(),
