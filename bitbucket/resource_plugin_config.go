@@ -2,11 +2,16 @@ package bitbucket
 
 import (
 	"bytes"
-	"fmt"
-	"net/url"
+	"encoding/json"
+	"io/ioutil"
 
 	"github.com/hashicorp/terraform/helper/schema"
 )
+
+type PluginConfig struct {
+	ValuesRaw json.RawMessage `json:"values"`
+	Values    string
+}
 
 func resourcePluginConfig() *schema.Resource {
 	return &schema.Resource{
@@ -19,16 +24,10 @@ func resourcePluginConfig() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"key": {
+			"config_endpoint": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
-			},
-			"validlicense": {
-				Type:     schema.TypeBool,
-				Default:  true,
-				Optional: true,
-				ForceNew: false,
 			},
 			"values": {
 				Type:     schema.TypeString,
@@ -41,7 +40,7 @@ func resourcePluginConfig() *schema.Resource {
 
 func resourcePluginConfigCreateOrUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketServerProvider).BitbucketClient
-	key := d.Get("key").(string)
+	configEndpoint := d.Get("config_endpoint").(string)
 	values := d.Get("values").(string)
 	config := []byte(values)
 	payload := &bytes.Buffer{}
@@ -50,30 +49,25 @@ func resourcePluginConfigCreateOrUpdate(d *schema.ResourceData, m interface{}) e
 		panic(err)
 	}
 
-	_, err = client.Put(fmt.Sprintf("/rest/%s/1.0/config", url.QueryEscape(key)), payload)
+	_, err = client.Put(configEndpoint, payload)
 	if err != nil {
 		return err
 	}
 
-	d.SetId(key)
+	d.SetId(configEndpoint)
 
 	return resourcePluginConfigRead(d, m)
 }
 
 func resourcePluginConfigRead(d *schema.ResourceData, m interface{}) error {
-	err := d.Set("key", d.Id())
+	err := d.Set("config_endpoint", d.Id())
 	if err != nil {
 		return err
 	}
 
-	key := d.Get("key").(string)
+	configEndpoint := d.Get("config_endpoint").(string)
 
-	pluginConfig, err := readPluginConfig(m, key)
-	if err != nil {
-		return err
-	}
-
-	err = d.Set("validlicense", pluginConfig.ValidLicense)
+	pluginConfig, err := readPluginConfig(m, configEndpoint)
 	if err != nil {
 		return err
 	}
@@ -89,4 +83,25 @@ func resourcePluginConfigRead(d *schema.ResourceData, m interface{}) error {
 func resourcePluginConfigDelete(d *schema.ResourceData, m interface{}) error {
 	// Delete is a no-op
 	return nil
+}
+
+func readPluginConfig(m interface{}, configEndpoint string) (PluginConfig, error) {
+	client := m.(*BitbucketServerProvider).BitbucketClient
+	resp, err := client.Get(configEndpoint)
+	if err != nil {
+		return PluginConfig{}, err
+	}
+	var pluginConfig PluginConfig
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return PluginConfig{}, err
+	}
+
+	err = json.Unmarshal(body, &pluginConfig)
+	if err != nil {
+		return PluginConfig{}, err
+	}
+	pluginConfig.Values = string(pluginConfig.ValuesRaw)
+	return pluginConfig, nil
 }
