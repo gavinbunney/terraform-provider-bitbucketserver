@@ -9,21 +9,15 @@ Configure plugins.
 
 ```hcl
 resource "bitbucketserver_plugin_config" "mypluginconfig" {
-  key    = "my-plugin-key"
-  values = "{"\key\": \"value\"}"
+  config_endpoint = "/rest/1.0/myplugin/config"
+  values          = "{"\key\": \"value\"}"
 }
 ```
 
 ## Argument Reference
 
-* `key` - Required. Unique key of the plugin. This is not the same used by plugin install.
+* `config_endpoint` - Required. Path to the configuration endpoint. Relative to the bitbucket server url configured in the provider.
 * `values` - Required. Plugin configuration in JSON format.
-
-## Attribute Reference
-
-* `key` - Unique key of the plugin. This is not the same used by plugin install.
-* `validlicense` - Indicates if the plugins has a valid license.
-* `values` - Plugin configuration in JSON format.
 
 ## Import
 
