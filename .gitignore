@@ -30,7 +30,6 @@ website/vendor
 !command/test-fixtures/**/*.tfstate
 !command/test-fixtures/**/.terraform/
 
-scripts/gogetcookie.sh
 docker-compose
 docker-compose-test-plugin.jar
 node_modules/
