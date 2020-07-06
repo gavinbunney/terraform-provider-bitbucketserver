@@ -14,4 +14,5 @@ echo "--> Starting docker-compose"
 ${DIR}/docker-compose up -d --build
 
 echo "--> Wait for bitbucket to be ready"
-bash ${DIR}/wait-for-url.sh --url http://localhost:7990/status --timeout 600
+#If the BITBUCKET_SERVER environment variable is not set then use http://localhost:7990
+bash ${DIR}/wait-for-url.sh --url ${BITBUCKET_SERVER-http://localhost:7990}/status --timeout 600

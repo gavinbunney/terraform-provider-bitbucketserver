@@ -7,6 +7,7 @@ import (
 )
 
 func TestAccBitbucketPluginConfig(t *testing.T) {
+	t.Skip("Skipping testing in CI environment")
 	config := `
 	resource "bitbucketserver_plugin" "test" {
 		key     = "de.codecentric.atlassian.oidc.bitbucket-oidc-plugin"
