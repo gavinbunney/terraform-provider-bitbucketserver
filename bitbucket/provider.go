@@ -47,6 +47,7 @@ func Provider() terraform.ResourceProvider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"bitbucketserver_banner":                       resourceBanner(),
+			"bitbucketserver_default_reviewers_condition":  resourceDefaultReviewersCondition(),
 			"bitbucketserver_global_permissions_group":     resourceGlobalPermissionsGroup(),
 			"bitbucketserver_global_permissions_user":      resourceGlobalPermissionsUser(),
 			"bitbucketserver_group":                        resourceGroup(),

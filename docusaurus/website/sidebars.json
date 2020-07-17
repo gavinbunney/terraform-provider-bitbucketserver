@@ -20,6 +20,7 @@
     ],
     "Resources": [
       "bitbucketserver_banner",
+      "bitbucketserver_default_reviewers_condition",
       "bitbucketserver_global_permissions_group",
       "bitbucketserver_global_permissions_user",
       "bitbucketserver_group",

@@ -49,6 +49,9 @@
       "bitbucketserver_banner": {
         "title": "bitbucketserver_banner"
       },
+      "bitbucketserver_default_reviewers_condition": {
+        "title": "bitbucketserver_default_reviewers_condition"
+      },
       "bitbucketserver_global_permissions_group": {
         "title": "bitbucketserver_global_permissions_group"
       },
