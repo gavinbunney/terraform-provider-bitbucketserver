@@ -7,7 +7,6 @@ import (
 )
 
 func TestAccBitbucketPlugin_install(t *testing.T) {
-	t.Skip("Skipping testing in CI environment")
 	config := `
 		resource "bitbucketserver_plugin" "test" {
 			key = "com.plugin.commitgraph.commitgraph"

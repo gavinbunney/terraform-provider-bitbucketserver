@@ -2,10 +2,8 @@ package bitbucket
 
 import (
 	"fmt"
-	"net/url"
-	"strings"
-
 	"github.com/hashicorp/terraform/helper/schema"
+	"net/url"
 )
 
 func resourceGroup() *schema.Resource {
@@ -39,9 +37,9 @@ func resourceGroupCreate(d *schema.ResourceData, m interface{}) error {
 	groupName := d.Get("name").(string)
 	importIfExists := d.Get("import_if_exists").(bool)
 	var newResource = true
-	_, err := client.Post(fmt.Sprintf("/rest/api/1.0/admin/groups?name=%s", url.QueryEscape(groupName)), nil)
+	response, err := client.Post(fmt.Sprintf("/rest/api/1.0/admin/groups?name=%s", url.QueryEscape(groupName)), nil)
 	if err != nil {
-		if importIfExists && strings.Contains(err.Error(), "API Error: 409") {
+		if importIfExists && response.StatusCode == 409 {
 			newResource = false
 		} else {
 			return err
