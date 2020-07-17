@@ -152,7 +152,7 @@ func resourceUserRead(d *schema.ResourceData, m interface{}) error {
 
 	client := m.(*BitbucketServerProvider).BitbucketClient
 	req, err := client.Get(fmt.Sprintf("/rest/api/1.0/users/%s",
-		url.QueryEscape(name),
+		url.PathEscape(name),
 	))
 
 	if err != nil {
@@ -192,7 +192,7 @@ func resourceUserExists(d *schema.ResourceData, m interface{}) (bool, error) {
 
 	client := m.(*BitbucketServerProvider).BitbucketClient
 	req, err := client.Get(fmt.Sprintf("/rest/api/1.0/users/%s",
-		url.QueryEscape(name),
+		url.PathEscape(name),
 	))
 
 	if err != nil {
