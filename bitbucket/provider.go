@@ -44,6 +44,7 @@ func Provider() terraform.ResourceProvider {
 			"bitbucketserver_repository_hooks":              dataSourceRepositoryHooks(),
 			"bitbucketserver_repository_permissions_groups": dataSourceRepositoryPermissionsGroups(),
 			"bitbucketserver_repository_permissions_users":  dataSourceRepositoryPermissionsUsers(),
+			"bitbucketserver_user":                          dataSourceUser(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"bitbucketserver_banner":                       resourceBanner(),

@@ -43,6 +43,9 @@
       "data_bitbucketserver_repository_permissions_users": {
         "title": "bitbucketserver_repository_permissions_users"
       },
+      "data_bitbucketserver_user": {
+        "title": "bitbucketserver_user"
+      },
       "provider": {
         "title": "Getting Started"
       },

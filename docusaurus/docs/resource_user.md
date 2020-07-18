@@ -25,6 +25,7 @@ resource "bitbucketserver_user" "admin" {
 ## Attribute Reference
 
 * `initial_password` - The generated user password. Only available if password was handled on Terraform resource creation, not import.
+* `user_id` - The user ID.
 
 ## Import
 

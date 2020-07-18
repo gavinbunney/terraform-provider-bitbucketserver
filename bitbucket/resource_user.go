@@ -4,18 +4,20 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
 	"io/ioutil"
 	"math/rand"
 	"net/url"
 	"time"
+
+	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform/helper/validation"
 )
 
 type User struct {
 	Name         string `json:"name,omitempty"`
 	EmailAddress string `json:"emailAddress,omitempty"`
 	DisplayName  string `json:"displayName,omitempty"`
+	UserId       int    `json:"id,omitempty"`
 }
 
 type UserUpdate struct {
@@ -176,6 +178,7 @@ func resourceUserRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("name", user.Name)
 		d.Set("email_address", user.EmailAddress)
 		d.Set("display_name", user.DisplayName)
+		d.Set("user_id", user.UserId)
 	}
 
 	return nil

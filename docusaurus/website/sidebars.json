@@ -16,7 +16,8 @@
       "data_bitbucketserver_project_permissions_users",
       "data_bitbucketserver_repository_hooks",
       "data_bitbucketserver_repository_permissions_groups",
-      "data_bitbucketserver_repository_permissions_users"
+      "data_bitbucketserver_repository_permissions_users",
+      "data_bitbucketserver_user"
     ],
     "Resources": [
       "bitbucketserver_banner",
