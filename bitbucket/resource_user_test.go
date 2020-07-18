@@ -15,7 +15,7 @@ func TestAccBitbucketUser(t *testing.T) {
 	userRand := fmt.Sprintf("%v", rand.New(rand.NewSource(time.Now().UnixNano())).Int())
 	config := fmt.Sprintf(`
 		resource "bitbucketserver_user" "test" {
-			name = "admin%v"
+			name = "admin %v"
 			display_name = "Admin %v"
 			email_address = "admin%v@example.com"
 		}
@@ -31,7 +31,7 @@ func TestAccBitbucketUser(t *testing.T) {
 			{
 				Config: config,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("bitbucketserver_user.test", "name", "admin"+userRand),
+					resource.TestCheckResourceAttr("bitbucketserver_user.test", "name", "admin "+userRand),
 					resource.TestCheckResourceAttr("bitbucketserver_user.test", "display_name", "Admin "+userRand),
 					resource.TestCheckResourceAttr("bitbucketserver_user.test", "email_address", "admin"+userRand+"@example.com"),
 					resource.TestCheckResourceAttrSet("bitbucketserver_user.test", "initial_password"),
@@ -40,7 +40,7 @@ func TestAccBitbucketUser(t *testing.T) {
 			{
 				Config: configModified,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("bitbucketserver_user.test", "name", "admin"+userRand),
+					resource.TestCheckResourceAttr("bitbucketserver_user.test", "name", "admin "+userRand),
 					resource.TestCheckResourceAttr("bitbucketserver_user.test", "display_name", "Admin Updated "+userRand),
 					resource.TestCheckResourceAttr("bitbucketserver_user.test", "email_address", "admin"+userRand+"@example.com"),
 					resource.TestCheckResourceAttrSet("bitbucketserver_user.test", "initial_password"),
