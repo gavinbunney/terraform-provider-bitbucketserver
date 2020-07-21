@@ -36,7 +36,7 @@ type DefaultReviewersConditionPayload struct {
 	SourceMatcher     Matcher    `json:"sourceMatcher,omitempty"`
 	TargetMatcher     Matcher    `json:"targetMatcher,omitempty"`
 	Reviewers         []Reviewer `json:"reviewers,omitempty"`
-	RequiredApprovals int        `json:"requiredApprovals,omitempty"`
+	RequiredApprovals string     `json:"requiredApprovals,omitempty"`
 }
 
 type DefaultReviewersConditionResp struct {
@@ -251,26 +251,29 @@ func resourceDefaultReviewersConditionCreate(d *schema.ResourceData, m interface
 	projectKey := d.Get("project_key").(string)
 	repositorySlug := d.Get("repository_slug").(string)
 
-	condition := &DefaultReviewersConditionPayload{
-		SourceMatcher:     expandMatcher(d.Get("source_matcher").(map[string]interface{})),
-		TargetMatcher:     expandMatcher(d.Get("target_matcher").(map[string]interface{})),
-		Reviewers:         expandReviewers(d.Get("reviewers").(*schema.Set)),
-		RequiredApprovals: d.Get("required_approvals").(int),
+	sourceMatcher := expandMatcher(d.Get("source_matcher").(map[string]interface{}))
+	targetMatcher := expandMatcher(d.Get("target_matcher").(map[string]interface{}))
+	reviewers := expandReviewers(d.Get("reviewers").(*schema.Set))
+	requiredApprovals := d.Get("required_approvals").(int)
+
+	if contains(validMatcherTypeIDs, sourceMatcher.Type.ID) == false {
+		return fmt.Errorf("source_matcher.type_id %s must be one of %v", sourceMatcher.Type.ID, validMatcherTypeIDs)
 	}
 
-	if contains(validMatcherTypeIDs, condition.SourceMatcher.Type.ID) == false {
-		return fmt.Errorf("source_matcher.type_id %s must be one of %v", condition.SourceMatcher.Type.ID, validMatcherTypeIDs)
+	if contains(validMatcherTypeIDs, targetMatcher.Type.ID) == false {
+		return fmt.Errorf("target_matcher.type_id %s must be one of %v", targetMatcher.Type.ID, validMatcherTypeIDs)
 	}
 
-	if contains(validMatcherTypeIDs, condition.TargetMatcher.Type.ID) == false {
-		return fmt.Errorf("target_matcher.type_id %s must be one of %v", condition.TargetMatcher.Type.ID, validMatcherTypeIDs)
+	if requiredApprovals > len(reviewers) {
+		return fmt.Errorf("required_approvals %d cannot be more than length of reviewers %d", requiredApprovals, len(reviewers))
 	}
 
-	if condition.RequiredApprovals > len(condition.Reviewers) {
-		return fmt.Errorf("required_approvals %d cannot be more than length of reviewers %d", condition.RequiredApprovals, len(condition.Reviewers))
-	}
-
-	bytedata, err := json.Marshal(condition)
+	bytedata, err := json.Marshal(&DefaultReviewersConditionPayload{
+		SourceMatcher:     sourceMatcher,
+		TargetMatcher:     targetMatcher,
+		Reviewers:         reviewers,
+		RequiredApprovals: strconv.Itoa(requiredApprovals),
+	})
 
 	if err != nil {
 		return err

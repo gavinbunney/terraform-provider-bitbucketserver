@@ -35,6 +35,30 @@ func TestAccBitbucketDefaultReviewersCondition_forProject(t *testing.T) {
 	})
 }
 
+func TestAccBitbucketDefaultReviewersCondition_noRequiredApprovals(t *testing.T) {
+	key := fmt.Sprintf("%v", rand.New(rand.NewSource(time.Now().UnixNano())).Int())
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckBitbucketDefaultReviewersConditionDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccBitbucketDefaultReviewersConditionResourceForProject(key, 0),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("bitbucketserver_default_reviewers_condition.test", "project_key", "TEST"+key),
+					resource.TestCheckResourceAttr("bitbucketserver_default_reviewers_condition.test", "source_matcher.id", "any"),
+					resource.TestCheckResourceAttr("bitbucketserver_default_reviewers_condition.test", "source_matcher.type_id", "ANY_REF"),
+					resource.TestCheckResourceAttr("bitbucketserver_default_reviewers_condition.test", "target_matcher.id", "any"),
+					resource.TestCheckResourceAttr("bitbucketserver_default_reviewers_condition.test", "target_matcher.type_id", "ANY_REF"),
+					resource.TestCheckResourceAttr("bitbucketserver_default_reviewers_condition.test", "reviewers.#", "1"),
+					resource.TestCheckResourceAttr("bitbucketserver_default_reviewers_condition.test", "required_approvals", "0"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccBitbucketDefaultReviewersCondition_forRepository(t *testing.T) {
 	key := fmt.Sprintf("%v", rand.New(rand.NewSource(time.Now().UnixNano())).Int())
 
