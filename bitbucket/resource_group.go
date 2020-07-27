@@ -10,6 +10,7 @@ func resourceGroup() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceGroupCreate,
 		Read:   resourceGroupRead,
+		Update: resourceGroupUpdate,
 		Delete: resourceGroupDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -21,6 +22,11 @@ func resourceGroup() *schema.Resource {
 				Required: true,
 				ForceNew: true,
 			},
+			"import_if_exists": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
 		},
 	}
 }
@@ -29,12 +35,22 @@ func resourceGroupCreate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketServerProvider).BitbucketClient
 
 	groupName := d.Get("name").(string)
-	_, err := client.Post(fmt.Sprintf("/rest/api/1.0/admin/groups?name=%s", url.QueryEscape(groupName)), nil)
+	importIfExists := d.Get("import_if_exists").(bool)
+	var newResource = true
+	response, err := client.Post(fmt.Sprintf("/rest/api/1.0/admin/groups?name=%s", url.QueryEscape(groupName)), nil)
 	if err != nil {
-		return err
+		if importIfExists && response.StatusCode == 409 {
+			newResource = false
+		} else {
+			return err
+		}
 	}
 
+	if newResource {
+		d.MarkNewResource()
+	}
 	d.SetId(groupName)
+
 	return resourceGroupRead(d, m)
 }
 
@@ -59,6 +75,12 @@ func resourceGroupRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	return fmt.Errorf("unable to find a matching group %s", groupName)
+}
+
+func resourceGroupUpdate(d *schema.ResourceData, m interface{}) error {
+	// The only attribute in the schema that does not have "ForceNew: true" is "import_if_exists",
+	// so we are not actually updating any groups in Bitbucket, we just need to read and return.
+	return resourceGroupRead(d, m)
 }
 
 func resourceGroupDelete(d *schema.ResourceData, m interface{}) error {

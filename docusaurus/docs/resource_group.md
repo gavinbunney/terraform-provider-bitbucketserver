@@ -16,6 +16,7 @@ resource "bitbucketserver_group" "browncoats" {
 ## Argument Reference
 
 * `name` - Required. Group to create.
+* `import_if_exists` - Optional. Import groups that already exist in bitbucket into the terraform state file.
 
 ## Import
 
