@@ -4,14 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/helper/schema"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+// Plugin ...
 type Plugin struct {
 	Key              string `json:"key,omitempty"`
 	Enabled          bool   `json:"enabled,omitempty"`
@@ -28,6 +30,7 @@ type Plugin struct {
 	} `json:"vendor,omitempty"`
 }
 
+// PluginLicense ...
 type PluginLicense struct {
 	Valid                        bool     `json:"valid,omitempty"`
 	Evaluation                   bool     `json:"evaluation,omitempty"`
@@ -51,6 +54,7 @@ type PluginLicense struct {
 	SupportEntitlementNumber     string   `json:"supportEntitlementNumber,omitempty"`
 }
 
+// PluginMarketplaceVersion ...
 type PluginMarketplaceVersion struct {
 	Version string `json:"name,omitempty"`
 	Links   struct {
@@ -72,6 +76,7 @@ type PluginMarketplaceVersion struct {
 	} `json:"_embedded,omitempty"`
 }
 
+// Key ...
 func (p *PluginMarketplaceVersion) Key() string {
 	re, _ := regexp.Compile("/rest/2/addons/([a-zA-Z0-9.-]*)/versions/build/.*")
 	values := re.FindStringSubmatch(p.Links.Self.Href)
@@ -81,6 +86,7 @@ func (p *PluginMarketplaceVersion) Key() string {
 	return ""
 }
 
+// Filename ...
 func (p *PluginMarketplaceVersion) Filename() string {
 	ext := filepath.Ext(p.Embedded.Artifact.Links.Self.Href)
 	return fmt.Sprintf("%s-%s%s", p.Key(), p.Version, ext)
@@ -252,7 +258,7 @@ func resourcePlugin() *schema.Resource {
 }
 
 func resourcePluginCreate(d *schema.ResourceData, m interface{}) error {
-	provider := m.(*BitbucketServerProvider)
+	provider := m.(*ServerProvider)
 
 	key := d.Get("key").(string)
 	version := d.Get("version").(string)
@@ -281,14 +287,14 @@ func resourcePluginCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	// first get a token for interacting with the UPM
-	resp, err := provider.BitbucketClient.Get("/rest/plugins/1.0/?os_authType=basic")
+	resp, err := provider.Client.Get("/rest/plugins/1.0/?os_authType=basic")
 	if err != nil {
 		return err
 	}
 	upmToken := resp.Header.Get("upm-token")
 
 	// now we can use the token to upload the downloaded marketplace file to bitbucket
-	_, err = provider.BitbucketClient.PostFileUpload("/rest/plugins/1.0/?token="+upmToken, nil, "plugin", file.Name())
+	_, err = provider.Client.PostFileUpload("/rest/plugins/1.0/?token="+upmToken, nil, "plugin", file.Name())
 	if err != nil {
 		return err
 	}
@@ -299,10 +305,9 @@ func resourcePluginCreate(d *schema.ResourceData, m interface{}) error {
 		func() *resource.RetryError {
 			exists, err := resourcePluginExists(d, m)
 			if exists == false || err != nil {
-				return resource.RetryableError(fmt.Errorf("Waiting for plugin installation to finish..."))
-			} else {
-				return nil
+				return resource.RetryableError(fmt.Errorf("waiting for plugin installation to finish"))
 			}
+			return nil
 		})
 	if err != nil {
 		return err
@@ -313,10 +318,9 @@ func resourcePluginCreate(d *schema.ResourceData, m interface{}) error {
 		func() *resource.RetryError {
 			err := resourcePluginUpdate(d, m)
 			if err != nil {
-				return resource.RetryableError(fmt.Errorf("Waiting for plugin updates to finish..."))
-			} else {
-				return nil
+				return resource.RetryableError(fmt.Errorf("waiting for plugin updates to finish"))
 			}
+			return nil
 		})
 	if err != nil {
 		return err
@@ -326,7 +330,7 @@ func resourcePluginCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourcePluginUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 
 	key := d.Get("key").(string)
 
@@ -358,8 +362,8 @@ func resourcePluginUpdate(d *schema.ResourceData, m interface{}) error {
 	if d.IsNewResource() || d.HasChange("license") {
 		license := d.Get("license").(string)
 		if license != "" {
-			licenseJson := map[string]string{"rawLicense": license}
-			bytedata, err := json.Marshal(licenseJson)
+			licenseJSON := map[string]string{"rawLicense": license}
+			bytedata, err := json.Marshal(licenseJSON)
 			if err != nil {
 				return err
 			}
@@ -387,7 +391,7 @@ func resourcePluginRead(d *schema.ResourceData, m interface{}) error {
 		_ = d.Set("key", id)
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	req, err := client.Get(fmt.Sprintf("/rest/plugins/1.0/%s-key", d.Get("key").(string)))
 	if err != nil {
 		return err
@@ -475,7 +479,7 @@ func resourcePluginExists(d *schema.ResourceData, m interface{}) (bool, error) {
 		key = d.Get("key").(string)
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	req, err := client.Get(fmt.Sprintf("/rest/plugins/1.0/%s-key",
 		key,
 	))
@@ -486,13 +490,12 @@ func resourcePluginExists(d *schema.ResourceData, m interface{}) (bool, error) {
 
 	if req.StatusCode == 200 {
 		return true, nil
-	} else {
-		return false, nil
 	}
+	return false, nil
 }
 
 func resourcePluginDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	_, err := client.Delete(fmt.Sprintf("/rest/plugins/1.0/%s-key",
 		d.Get("key").(string),
 	))
@@ -500,7 +503,7 @@ func resourcePluginDelete(d *schema.ResourceData, m interface{}) error {
 	return err
 }
 
-func readMarketplacePluginVersion(key string, version string, provider *BitbucketServerProvider) (*PluginMarketplaceVersion, error) {
+func readMarketplacePluginVersion(key string, version string, provider *ServerProvider) (*PluginMarketplaceVersion, error) {
 	marketplaceRequest, err := provider.MarketplaceClient.Get(fmt.Sprintf("/rest/2/addons/%s/versions/name/%s", key, version))
 	if err != nil {
 		return nil, err

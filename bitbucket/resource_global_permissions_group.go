@@ -2,9 +2,10 @@ package bitbucket
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
 	"net/url"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceGlobalPermissionsGroup() *schema.Resource {
@@ -33,7 +34,7 @@ func resourceGlobalPermissionsGroup() *schema.Resource {
 }
 
 func resourceGlobalPermissionsGroupUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	_, err := client.Put(fmt.Sprintf("/rest/api/1.0/admin/permissions/groups?permission=%s&name=%s",
 		url.QueryEscape(d.Get("permission").(string)),
 		url.QueryEscape(d.Get("group").(string)),
@@ -80,7 +81,7 @@ func resourceGlobalPermissionsGroupRead(d *schema.ResourceData, m interface{}) e
 }
 
 func resourceGlobalPermissionsGroupDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/admin/permissions/groups?name=%s",
 		url.QueryEscape(d.Get("group").(string)),
 	))

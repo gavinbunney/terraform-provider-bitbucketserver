@@ -9,22 +9,26 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+// Reviewer ...
 type Reviewer struct {
 	ID int `json:"id,omitempty"`
 }
 
+// MatcherType ...
 type MatcherType struct {
 	ID string `json:"id,omitempty"`
 }
 
+// Matcher ...
 type Matcher struct {
 	ID   string      `json:"id,omitempty"`
 	Type MatcherType `json:"type,omitempty"`
 }
 
+// RefMatcher ...
 type RefMatcher struct {
 	ID   string `json:"id,omitempty"`
 	Type struct {
@@ -32,6 +36,7 @@ type RefMatcher struct {
 	} `json:"type,omitempty"`
 }
 
+// DefaultReviewersConditionPayload ...
 type DefaultReviewersConditionPayload struct {
 	SourceMatcher     Matcher    `json:"sourceMatcher,omitempty"`
 	TargetMatcher     Matcher    `json:"targetMatcher,omitempty"`
@@ -39,6 +44,7 @@ type DefaultReviewersConditionPayload struct {
 	RequiredApprovals string     `json:"requiredApprovals,omitempty"`
 }
 
+// DefaultReviewersConditionResp ...
 type DefaultReviewersConditionResp struct {
 	ID                int        `json:"id,omitempty"`
 	RequiredApprovals int        `json:"requiredApprovals,omitempty"`
@@ -279,7 +285,7 @@ func resourceDefaultReviewersConditionCreate(d *schema.ResourceData, m interface
 		return err
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 
 	resp, err := client.Post(getCreateConditionURI(projectKey, repositorySlug), bytes.NewBuffer(bytedata))
 
@@ -313,7 +319,7 @@ func resourceDefaultReviewersConditionRead(d *schema.ResourceData, m interface{}
 		return err
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 
 	resp, err := client.Get(getReadConditionURI(projectKey, repositorySlug))
 
@@ -364,7 +370,7 @@ func resourceDefaultReviewersConditionDelete(d *schema.ResourceData, m interface
 		return err
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 
 	_, err = client.Delete(getDeleteConditionURI(conditionID, projectKey, repositorySlug))
 

@@ -4,17 +4,20 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
 	"io/ioutil"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+// AccessTokenRequest ...
 type AccessTokenRequest struct {
 	Name        string        `json:"name,omitempty"`
 	Permissions []interface{} `json:"permissions,omitempty"`
 }
 
+// AccessTokenResponse ...
 type AccessTokenResponse struct {
-	Id                string   `json:"id,omitempty"`
+	ID                string   `json:"id,omitempty"`
 	CreatedDate       jsonTime `json:"createdDate,omitempty"`
 	LastAuthenticated jsonTime `json:"lastAuthenticated,omitempty"`
 	Name              string   `json:"name,omitempty"`
@@ -66,7 +69,7 @@ func resourceUserAccessToken() *schema.Resource {
 }
 
 func resourceUserAccessTokenCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 
 	accessTokenRequest := &AccessTokenRequest{
 		Name:        d.Get("name").(string),
@@ -98,14 +101,14 @@ func resourceUserAccessTokenCreate(d *schema.ResourceData, m interface{}) error 
 		return decodeErr
 	}
 
-	d.SetId(accessTokenResponse.Id)
+	d.SetId(accessTokenResponse.ID)
 	_ = d.Set("access_token", accessTokenResponse.Token)
 
 	return resourceUserAccessTokenRead(d, m)
 }
 
 func resourceUserAccessTokenUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	accessTokenRequest := &AccessTokenRequest{
 		Name:        d.Get("name").(string),
 		Permissions: d.Get("permissions").([]interface{}),
@@ -130,7 +133,7 @@ func resourceUserAccessTokenUpdate(d *schema.ResourceData, m interface{}) error 
 
 func resourceUserAccessTokenRead(d *schema.ResourceData, m interface{}) error {
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	res, err := client.Get(fmt.Sprintf("/rest/access-tokens/1.0/users/%s/%s",
 		d.Get("user").(string),
 		d.Id(),
@@ -160,7 +163,7 @@ func resourceUserAccessTokenRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceUserAccessTokenExists(d *schema.ResourceData, m interface{}) (bool, error) {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	req, err := client.Get(fmt.Sprintf("/rest/access-tokens/1.0/users/%s/%s",
 		d.Get("user").(string),
 		d.Id(),
@@ -172,13 +175,12 @@ func resourceUserAccessTokenExists(d *schema.ResourceData, m interface{}) (bool,
 
 	if req.StatusCode == 200 {
 		return true, nil
-	} else {
-		return false, nil
 	}
+	return false, nil
 }
 
 func resourceUserAccessTokenDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	_, err := client.Delete(fmt.Sprintf("/rest/access-tokens/1.0/users/%s/%s",
 		d.Get("user").(string),
 		d.Id(),

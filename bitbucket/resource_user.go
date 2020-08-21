@@ -9,17 +9,19 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+// User ...
 type User struct {
 	Name         string `json:"name,omitempty"`
 	EmailAddress string `json:"emailAddress,omitempty"`
 	DisplayName  string `json:"displayName,omitempty"`
-	UserId       int    `json:"id,omitempty"`
+	UserID       int    `json:"id,omitempty"`
 }
 
+// UserUpdate ...
 type UserUpdate struct {
 	Name         string `json:"name,omitempty"`
 	EmailAddress string `json:"email,omitempty"`
@@ -102,7 +104,7 @@ func newUserUpdateFromResource(d *schema.ResourceData) *UserUpdate {
 }
 
 func resourceUserUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	user := newUserUpdateFromResource(d)
 
 	bytedata, err := json.Marshal(user)
@@ -121,7 +123,7 @@ func resourceUserUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceUserCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	user := newUserFromResource(d)
 
 	passwordLength := d.Get("password_length").(int)
@@ -152,7 +154,7 @@ func resourceUserRead(d *schema.ResourceData, m interface{}) error {
 
 	name := d.Get("name").(string)
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	req, err := client.Get(fmt.Sprintf("/rest/api/1.0/users/%s",
 		url.PathEscape(name),
 	))
@@ -178,7 +180,7 @@ func resourceUserRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("name", user.Name)
 		d.Set("email_address", user.EmailAddress)
 		d.Set("display_name", user.DisplayName)
-		d.Set("user_id", user.UserId)
+		d.Set("user_id", user.UserID)
 	}
 
 	return nil
@@ -193,7 +195,7 @@ func resourceUserExists(d *schema.ResourceData, m interface{}) (bool, error) {
 		name = d.Get("name").(string)
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	req, err := client.Get(fmt.Sprintf("/rest/api/1.0/users/%s",
 		url.PathEscape(name),
 	))
@@ -204,14 +206,13 @@ func resourceUserExists(d *schema.ResourceData, m interface{}) (bool, error) {
 
 	if req.StatusCode == 200 {
 		return true, nil
-	} else {
-		return false, nil
 	}
+	return false, nil
 }
 
 func resourceUserDelete(d *schema.ResourceData, m interface{}) error {
 	name := d.Get("name").(string)
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/admin/users?name=%s",
 		url.QueryEscape(name),
 	))

@@ -3,14 +3,17 @@ package bitbucket
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
 	"net/url"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+// PaginatedGroupsValue ...
 type PaginatedGroupsValue struct {
 	Name string `json:"name,omitempty"`
 }
 
+// PaginatedGroups ...
 type PaginatedGroups struct {
 	Values        []PaginatedGroupsValue `json:"values,omitempty"`
 	Size          int                    `json:"size,omitempty"`
@@ -65,7 +68,7 @@ func dataSourceGroupsRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func readGroups(m interface{}, filter string) ([]string, error) {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 
 	resourceURL := "/rest/api/1.0/admin/groups"
 	if filter != "" {

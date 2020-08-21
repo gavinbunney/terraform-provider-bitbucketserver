@@ -3,12 +3,14 @@ package bitbucket
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
 	"net/url"
 	"sort"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+// PaginatedRepositoryHooksValue ...
 type PaginatedRepositoryHooksValue struct {
 	Details struct {
 		Key         string   `json:"key,omitempty"`
@@ -22,10 +24,11 @@ type PaginatedRepositoryHooksValue struct {
 	Configured bool `json:"configured,omitempty"`
 	Scope      struct {
 		Type       string `json:"type,omitempty"`
-		ResourceId int    `json:"resourceId,omitempty"`
+		ResourceID int    `json:"resourceId,omitempty"`
 	} `json:"scope,omitempty"`
 }
 
+// RepositoryHook ...
 type RepositoryHook struct {
 	Key             string
 	Name            string
@@ -36,9 +39,10 @@ type RepositoryHook struct {
 	Enabled         bool
 	Configured      bool
 	ScopeType       string
-	ScopeResourceId int
+	ScopeResourceID int
 }
 
+// PaginatedRepositoryHooks ...
 type PaginatedRepositoryHooks struct {
 	Values        []PaginatedRepositoryHooksValue `json:"values,omitempty"`
 	Size          int                             `json:"size,omitempty"`
@@ -139,7 +143,7 @@ func dataSourceRepositoryHooksRead(d *schema.ResourceData, m interface{}) error 
 		h["enabled"] = hook.Enabled
 		h["configured"] = hook.Configured
 		h["scope_type"] = hook.ScopeType
-		h["scope_resource_id"] = hook.ScopeResourceId
+		h["scope_resource_id"] = hook.ScopeResourceID
 		terraformHooks = append(terraformHooks, h)
 	}
 
@@ -148,7 +152,7 @@ func dataSourceRepositoryHooksRead(d *schema.ResourceData, m interface{}) error 
 }
 
 func readRepositoryHooks(m interface{}, project string, repository string, typeFilter string) ([]RepositoryHook, error) {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 
 	resourceURL := fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/settings/hooks",
 		project,
@@ -186,7 +190,7 @@ func readRepositoryHooks(m interface{}, project string, repository string, typeF
 				Enabled:         hook.Enabled,
 				Configured:      hook.Configured,
 				ScopeType:       hook.Scope.Type,
-				ScopeResourceId: hook.Scope.ResourceId,
+				ScopeResourceID: hook.Scope.ResourceID,
 			}
 			hooks = append(hooks, h)
 		}

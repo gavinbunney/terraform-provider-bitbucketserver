@@ -2,10 +2,11 @@ package bitbucket
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/terraform"
 	"strings"
 	"testing"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccBitbucketUserAccessToken(t *testing.T) {
@@ -53,7 +54,7 @@ func TestAccBitbucketUserAccessToken(t *testing.T) {
 }
 
 func testAccCheckBitbucketUserAccessTokenDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*BitbucketServerProvider).BitbucketClient
+	client := testAccProvider.Meta().(*ServerProvider).Client
 	rs, ok := s.RootModule().Resources["bitbucketserver_user_access_token.test"]
 	if !ok {
 		return fmt.Errorf("not found %s", "bitbucketserver_user_access_token.test")

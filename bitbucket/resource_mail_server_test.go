@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccBitbucketMailServer(t *testing.T) {
@@ -49,7 +49,7 @@ func TestAccBitbucketMailServer(t *testing.T) {
 }
 
 func testAccCheckBitbucketMailServerDestroy(s *terraform.State) error {
-	client := testAccProvider.Meta().(*BitbucketServerProvider).BitbucketClient
+	client := testAccProvider.Meta().(*ServerProvider).Client
 	_, ok := s.RootModule().Resources["bitbucketserver_mail_server.test"]
 	if !ok {
 		return fmt.Errorf("not found %s", "bitbucketserver_mail_server.test")

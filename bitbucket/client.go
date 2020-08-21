@@ -36,14 +36,16 @@ func (e Error) Error() string {
 	return fmt.Sprintf("API Error: %d %s %s", e.StatusCode, e.Endpoint, errorMessages)
 }
 
-type BitbucketClient struct {
+// Client ...
+type Client struct {
 	Server     string
 	Username   string
 	Password   string
 	HTTPClient *http.Client
 }
 
-func (c *BitbucketClient) Do(method, endpoint string, payload *bytes.Buffer, contentType string) (*http.Response, error) {
+// Do ...
+func (c *Client) Do(method, endpoint string, payload *bytes.Buffer, contentType string) (*http.Response, error) {
 
 	absoluteendpoint := c.Server + endpoint
 	log.Printf("[DEBUG] Sending request to %s %s", method, absoluteendpoint)
@@ -95,8 +97,8 @@ func (c *BitbucketClient) Do(method, endpoint string, payload *bytes.Buffer, con
 	return resp, err
 }
 
-// Creates a new file upload http request with optional extra params
-func (c *BitbucketClient) PostFileUpload(endpoint string, params map[string]string, paramName, path string) (*http.Response, error) {
+// PostFileUpload creates a new file upload http request with optional extra params
+func (c *Client) PostFileUpload(endpoint string, params map[string]string, paramName, path string) (*http.Response, error) {
 	absoluteendpoint := c.Server + endpoint
 	log.Printf("[DEBUG] Sending request to POST %s", absoluteendpoint)
 
@@ -156,22 +158,27 @@ func (c *BitbucketClient) PostFileUpload(endpoint string, params map[string]stri
 	return resp, err
 }
 
-func (c *BitbucketClient) Get(endpoint string) (*http.Response, error) {
+// Get ...
+func (c *Client) Get(endpoint string) (*http.Response, error) {
 	return c.Do("GET", endpoint, nil, "application/json")
 }
 
-func (c *BitbucketClient) Post(endpoint string, jsonpayload *bytes.Buffer) (*http.Response, error) {
+// Post ...
+func (c *Client) Post(endpoint string, jsonpayload *bytes.Buffer) (*http.Response, error) {
 	return c.Do("POST", endpoint, jsonpayload, "application/json")
 }
 
-func (c *BitbucketClient) Put(endpoint string, jsonpayload *bytes.Buffer) (*http.Response, error) {
+// Put ...
+func (c *Client) Put(endpoint string, jsonpayload *bytes.Buffer) (*http.Response, error) {
 	return c.Do("PUT", endpoint, jsonpayload, "application/json")
 }
 
-func (c *BitbucketClient) PutOnly(endpoint string) (*http.Response, error) {
+// PutOnly ...
+func (c *Client) PutOnly(endpoint string) (*http.Response, error) {
 	return c.Do("PUT", endpoint, nil, "application/json")
 }
 
-func (c *BitbucketClient) Delete(endpoint string) (*http.Response, error) {
+// Delete ...
+func (c *Client) Delete(endpoint string) (*http.Response, error) {
 	return c.Do("DELETE", endpoint, nil, "application/json")
 }

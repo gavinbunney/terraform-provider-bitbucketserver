@@ -2,10 +2,12 @@ package bitbucket
 
 import (
 	"encoding/json"
-	"github.com/hashicorp/terraform/helper/schema"
 	"io/ioutil"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+// ClusterNode ...
 type ClusterNode struct {
 	ID      string `json:"id,omitempty"`
 	Name    string `json:"name,omitempty"`
@@ -16,6 +18,7 @@ type ClusterNode struct {
 	Local bool `json:"local,omitempty"`
 }
 
+// Cluster ...
 type Cluster struct {
 	LocalNode ClusterNode   `json:"localNode,omitempty"`
 	Nodes     []ClusterNode `json:"nodes,omitempty"`
@@ -73,7 +76,7 @@ func clusterNodeResourceSchema() *schema.Resource {
 }
 
 func dataSourceClusterRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	req, err := client.Get("/rest/api/1.0/admin/cluster")
 
 	if err != nil {

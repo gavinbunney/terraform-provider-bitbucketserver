@@ -5,12 +5,11 @@ import (
 	"strings"
 
 	"github.com/gavinbunney/terraform-provider-bitbucketserver/bitbucket/marketplace"
-
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func Provider() terraform.ResourceProvider {
+// Provider ...
+func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"server": {
@@ -71,8 +70,9 @@ func Provider() terraform.ResourceProvider {
 	}
 }
 
-type BitbucketServerProvider struct {
-	BitbucketClient   *BitbucketClient
+// ServerProvider ...
+type ServerProvider struct {
+	Client            *Client
 	MarketplaceClient *marketplace.Client
 }
 
@@ -83,7 +83,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		serverSanitized = serverSanitized[0 : len(serverSanitized)-1]
 	}
 
-	b := &BitbucketClient{
+	b := &Client{
 		Server:     serverSanitized,
 		Username:   d.Get("username").(string),
 		Password:   d.Get("password").(string),
@@ -94,8 +94,8 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		HTTPClient: &http.Client{},
 	}
 
-	return &BitbucketServerProvider{
-		BitbucketClient:   b,
+	return &ServerProvider{
+		Client:            b,
 		MarketplaceClient: m,
 	}, nil
 }

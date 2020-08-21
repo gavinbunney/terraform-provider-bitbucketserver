@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
 	"io/ioutil"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+// Banner ...
 type Banner struct {
 	Message  string `json:"message,omitempty"`
 	Audience string `json:"audience,omitempty"`
@@ -57,7 +59,7 @@ func newBannerFromResource(d *schema.ResourceData) *Banner {
 }
 
 func resourceBannerUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	banner := newBannerFromResource(d)
 
 	bytedata, err := json.Marshal(banner)
@@ -81,7 +83,7 @@ func resourceBannerCreate(d *schema.ResourceData, m interface{}) error {
 
 func resourceBannerRead(d *schema.ResourceData, m interface{}) error {
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	req, err := client.Get("/rest/api/1.0/admin/banner")
 
 	if err != nil {
@@ -108,7 +110,7 @@ func resourceBannerRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceBannerExists(d *schema.ResourceData, m interface{}) (bool, error) {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	repoReq, err := client.Get("/rest/api/1.0/admin/banner")
 	if err != nil {
 		return false, fmt.Errorf("failed to get banner from bitbucket: %+v", err)
@@ -116,13 +118,12 @@ func resourceBannerExists(d *schema.ResourceData, m interface{}) (bool, error) {
 
 	if repoReq.StatusCode == 200 {
 		return true, nil
-	} else {
-		return false, nil
 	}
+	return false, nil
 }
 
 func resourceBannerDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	_, err := client.Delete("/rest/api/1.0/admin/banner")
 	return err
 }

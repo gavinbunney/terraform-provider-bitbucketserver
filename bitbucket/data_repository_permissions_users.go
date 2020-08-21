@@ -3,10 +3,12 @@ package bitbucket
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
 	"net/url"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+// PaginatedRepositoryPermissionsUsersValue ...
 type PaginatedRepositoryPermissionsUsersValue struct {
 	User struct {
 		Name         string `json:"name,omitempty"`
@@ -17,6 +19,7 @@ type PaginatedRepositoryPermissionsUsersValue struct {
 	Permission string `json:"permission,omitempty"`
 }
 
+// RepositoryPermissionsUser ...
 type RepositoryPermissionsUser struct {
 	Name         string
 	EmailAddress string
@@ -25,6 +28,7 @@ type RepositoryPermissionsUser struct {
 	Permission   string
 }
 
+// PaginatedRepositoryPermissionsUsers ...
 type PaginatedRepositoryPermissionsUsers struct {
 	Values        []PaginatedRepositoryPermissionsUsersValue `json:"values,omitempty"`
 	Size          int                                        `json:"size,omitempty"`
@@ -107,7 +111,7 @@ func dataSourceRepositoryPermissionsUsersRead(d *schema.ResourceData, m interfac
 }
 
 func readRepositoryPermissionsUsers(m interface{}, project string, repository string, filter string) ([]RepositoryPermissionsUser, error) {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 
 	resourceURL := fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/permissions/users",
 		url.QueryEscape(project),

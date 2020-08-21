@@ -2,13 +2,14 @@ package bitbucket
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform/helper/resource"
 	"net/http"
 	"net/url"
 	"os"
 	"regexp"
 	"strings"
 	"testing"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestAccBitbucketResourceGroup_basic(t *testing.T) {
@@ -89,13 +90,13 @@ func createGroup(groupName string) {
 	client.Post(fmt.Sprintf("/rest/api/1.0/admin/groups?name=%s", url.QueryEscape(groupName)), nil)
 }
 
-func newBitbucketClient() *BitbucketClient {
+func newBitbucketClient() *Client {
 	serverSanitized := os.Getenv("BITBUCKET_SERVER")
 	if strings.HasSuffix(serverSanitized, "/") {
 		serverSanitized = serverSanitized[0 : len(serverSanitized)-1]
 	}
 
-	return &BitbucketClient{
+	return &Client{
 		Server:     serverSanitized,
 		Username:   os.Getenv("BITBUCKET_USERNAME"),
 		Password:   os.Getenv("BITBUCKET_PASSWORD"),

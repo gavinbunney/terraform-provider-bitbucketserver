@@ -5,14 +5,17 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
 	"io/ioutil"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+// License ...
 type License struct {
 	License string `json:"license,omitempty"`
 }
 
+// LicenseResponse ...
 type LicenseResponse struct {
 	License                  string   `json:"license,omitempty"`
 	CreationDate             jsonTime `json:"creationDate,omitempty"`
@@ -22,7 +25,7 @@ type LicenseResponse struct {
 	GracePeriodEndDate       jsonTime `json:"gracePeriodEndDate,omitempty"`
 	MaximumNumberOfUsers     int      `json:"maximumNumberOfUsers,omitempty"`
 	UnlimitedUsers           bool     `json:"unlimitedNumberOfUsers,omitempty"`
-	ServerId                 string   `json:"serverId,omitempty"`
+	ServerID                 string   `json:"serverId,omitempty"`
 	SupportEntitlementNumber string   `json:"supportEntitlementNumber,omitempty"`
 }
 
@@ -91,7 +94,7 @@ func newLicenseFromResource(d *schema.ResourceData) *License {
 }
 
 func resourceLicenseUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	license := newLicenseFromResource(d)
 
 	bytedata, err := json.Marshal(license)
@@ -115,7 +118,7 @@ func resourceLicenseCreate(d *schema.ResourceData, m interface{}) error {
 
 func resourceLicenseRead(d *schema.ResourceData, m interface{}) error {
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	req, err := client.Get("/rest/api/1.0/admin/license")
 
 	if err != nil {
@@ -144,7 +147,7 @@ func resourceLicenseRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("grace_period_end_date", license.GracePeriodEndDate.String())
 		d.Set("maximum_users", license.MaximumNumberOfUsers)
 		d.Set("unlimited_users", license.UnlimitedUsers)
-		d.Set("server_id", license.ServerId)
+		d.Set("server_id", license.ServerID)
 		d.Set("support_entitlement_number", license.SupportEntitlementNumber)
 	}
 
@@ -152,7 +155,7 @@ func resourceLicenseRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLicenseDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	_, err := client.Delete("/rest/api/1.0/admin/mail-server")
 	return err
 }

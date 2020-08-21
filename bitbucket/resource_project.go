@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
 	"io/ioutil"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+// Project ...
 type Project struct {
 	Name        string `json:"name,omitempty"`
 	Key         string `json:"key,omitempty"`
@@ -67,7 +69,7 @@ func newProjectFromResource(d *schema.ResourceData) *Project {
 }
 
 func resourceProjectUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	project := newProjectFromResource(d)
 
 	bytedata, err := json.Marshal(project)
@@ -88,7 +90,7 @@ func resourceProjectUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceProjectCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	project := newProjectFromResource(d)
 
 	bytedata, err := json.Marshal(project)
@@ -116,8 +118,8 @@ func resourceProjectRead(d *schema.ResourceData, m interface{}) error {
 
 	project := d.Get("key").(string)
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
-	project_req, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s",
+	client := m.(*ServerProvider).Client
+	projectReq, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s",
 		project,
 	))
 
@@ -125,11 +127,11 @@ func resourceProjectRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	if project_req.StatusCode == 200 {
+	if projectReq.StatusCode == 200 {
 
 		var project Project
 
-		body, readerr := ioutil.ReadAll(project_req.Body)
+		body, readerr := ioutil.ReadAll(projectReq.Body)
 		if readerr != nil {
 			return readerr
 		}
@@ -157,8 +159,8 @@ func resourceProjectExists(d *schema.ResourceData, m interface{}) (bool, error) 
 		project = d.Get("key").(string)
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
-	repo_req, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s",
+	client := m.(*ServerProvider).Client
+	repoReq, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s",
 		project,
 	))
 
@@ -166,16 +168,15 @@ func resourceProjectExists(d *schema.ResourceData, m interface{}) (bool, error) 
 		return false, fmt.Errorf("failed to get project %s from bitbucket: %+v", project, err)
 	}
 
-	if repo_req.StatusCode == 200 {
+	if repoReq.StatusCode == 200 {
 		return true, nil
-	} else {
-		return false, nil
 	}
+	return false, nil
 }
 
 func resourceProjectDelete(d *schema.ResourceData, m interface{}) error {
 	project := d.Get("key").(string)
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/projects/%s",
 		project,
 	))

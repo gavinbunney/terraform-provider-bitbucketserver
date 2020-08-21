@@ -3,7 +3,7 @@ package bitbucket
 import (
 	"testing"
 
-	"github.com/hashicorp/terraform/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestAccBitbucketDataPlugin_notifyer(t *testing.T) {

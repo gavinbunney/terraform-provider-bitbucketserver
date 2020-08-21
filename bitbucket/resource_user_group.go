@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
 	"strings"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+// UserGroup ...
 type UserGroup struct {
 	User  string
 	Group string
@@ -47,7 +49,7 @@ func newUserGroupFromResource(d *schema.ResourceData) *UserGroup {
 }
 
 func resourceUserGroupCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 
 	type UserGroupRequest struct {
 		User   string   `json:"user,omitempty"`
@@ -110,7 +112,7 @@ func resourceUserGroupDelete(d *schema.ResourceData, m interface{}) error {
 
 	userGroup := newUserGroupFromResource(d)
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 
 	type RemoveRequest struct {
 		User  string `json:"context,omitempty"`

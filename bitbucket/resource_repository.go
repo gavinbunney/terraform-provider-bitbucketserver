@@ -5,16 +5,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-
-	"github.com/hashicorp/terraform/helper/schema"
 	"strings"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-type CloneUrl struct {
+// CloneURL ...
+type CloneURL struct {
 	Href string `json:"href,omitempty"`
 	Name string `json:"name,omitempty"`
 }
 
+// Repository ...
 type Repository struct {
 	Name        string `json:"name,omitempty"`
 	Slug        string `json:"slug,omitempty"`
@@ -22,14 +24,16 @@ type Repository struct {
 	Forkable    bool   `json:"forkable,omitempty"`
 	Public      bool   `json:"public,omitempty"`
 	Links       struct {
-		Clone []CloneUrl `json:"clone,omitempty"`
+		Clone []CloneURL `json:"clone,omitempty"`
 	} `json:"links,omitempty"`
 }
 
+// RepositoryForkProject ...
 type RepositoryForkProject struct {
 	Key string `json:"key,omitempty"`
 }
 
+// RepositoryFork ...
 type RepositoryFork struct {
 	Name    string                `json:"name,omitempty"`
 	Project RepositoryForkProject `json:"project,omitempty"`
@@ -116,7 +120,7 @@ func newRepositoryFromResource(d *schema.ResourceData) (Repo *Repository) {
 }
 
 func resourceRepositoryUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	project := d.Get("project").(string)
 	repo := newRepositoryFromResource(d)
 
@@ -146,7 +150,7 @@ func resourceRepositoryUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceRepositoryCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 
 	project := d.Get("project").(string)
 	repoSlug := determineSlug(d)
@@ -180,12 +184,11 @@ func resourceRepositoryCreate(d *schema.ResourceData, m interface{}) error {
 	if forkProject != "" {
 		// after forking a repository, run the update loop to update any names/descriptions etc of the forked repo
 		return resourceRepositoryUpdate(d, m)
-	} else {
-		return resourceRepositoryRead(d, m)
 	}
+	return resourceRepositoryRead(d, m)
 }
 
-func createNewRepository(client *BitbucketClient, d *schema.ResourceData, project string) error {
+func createNewRepository(client *Client, d *schema.ResourceData, project string) error {
 	repo := newRepositoryFromResource(d)
 	bytedata, err := json.Marshal(repo)
 
@@ -204,7 +207,7 @@ func createNewRepository(client *BitbucketClient, d *schema.ResourceData, projec
 	return nil
 }
 
-func createNewRepositoryFromFork(client *BitbucketClient, d *schema.ResourceData, project string, repository string, forkProject string, forkRepository string) error {
+func createNewRepositoryFromFork(client *Client, d *schema.ResourceData, project string, repository string, forkProject string, forkRepository string) error {
 	requestBody := &RepositoryFork{
 		Name: repository,
 		Project: RepositoryForkProject{
@@ -225,7 +228,7 @@ func createNewRepositoryFromFork(client *BitbucketClient, d *schema.ResourceData
 	return nil
 }
 
-func handleRepositoryGitLFSChanges(client *BitbucketClient, project string, repoSlug string, d *schema.ResourceData) error {
+func handleRepositoryGitLFSChanges(client *Client, project string, repoSlug string, d *schema.ResourceData) error {
 	enableGitLFS := d.Get("enable_git_lfs").(bool)
 	if (d.IsNewResource() && enableGitLFS) || d.HasChange("enable_git_lfs") {
 		if enableGitLFS {
@@ -267,8 +270,8 @@ func resourceRepositoryRead(d *schema.ResourceData, m interface{}) error {
 	repoSlug := determineSlug(d)
 	project := d.Get("project").(string)
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
-	repo_req, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s",
+	client := m.(*ServerProvider).Client
+	repoReq, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s",
 		project,
 		repoSlug,
 	))
@@ -277,11 +280,11 @@ func resourceRepositoryRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	if repo_req.StatusCode == 200 {
+	if repoReq.StatusCode == 200 {
 
 		var repo Repository
 
-		body, readerr := ioutil.ReadAll(repo_req.Body)
+		body, readerr := ioutil.ReadAll(repoReq.Body)
 		if readerr != nil {
 			return readerr
 		}
@@ -299,11 +302,11 @@ func resourceRepositoryRead(d *schema.ResourceData, m interface{}) error {
 		_ = d.Set("forkable", repo.Forkable)
 		_ = d.Set("public", repo.Public)
 
-		for _, clone_url := range repo.Links.Clone {
-			if clone_url.Name == "http" {
-				_ = d.Set("clone_https", clone_url.Href)
+		for _, cloneURL := range repo.Links.Clone {
+			if cloneURL.Name == "http" {
+				_ = d.Set("clone_https", cloneURL.Href)
 			} else {
-				_ = d.Set("clone_ssh", clone_url.Href)
+				_ = d.Set("clone_ssh", cloneURL.Href)
 			}
 		}
 
@@ -332,8 +335,8 @@ func resourceRepositoryExists(d *schema.ResourceData, m interface{}) (bool, erro
 		}
 	}
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
-	repo_req, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s",
+	client := m.(*ServerProvider).Client
+	repoReq, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s",
 		project,
 		repoSlug,
 	))
@@ -342,17 +345,16 @@ func resourceRepositoryExists(d *schema.ResourceData, m interface{}) (bool, erro
 		return false, fmt.Errorf("failed to get repository %s/%s from bitbucket: %+v", project, repoSlug, err)
 	}
 
-	if repo_req.StatusCode == 200 {
+	if repoReq.StatusCode == 200 {
 		return true, nil
-	} else {
-		return false, nil
 	}
+	return false, nil
 }
 
 func resourceRepositoryDelete(d *schema.ResourceData, m interface{}) error {
 	repoSlug := determineSlug(d)
 	project := d.Get("project").(string)
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s",
 		project,
 		repoSlug,

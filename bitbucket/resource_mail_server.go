@@ -3,10 +3,12 @@ package bitbucket
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/hashicorp/terraform/helper/schema"
 	"io/ioutil"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+// MailConfiguration ...
 type MailConfiguration struct {
 	Hostname        string `json:"hostname,omitempty"`
 	Port            int    `json:"port,omitempty"`
@@ -86,7 +88,7 @@ func newMailConfigurationFromResource(d *schema.ResourceData) *MailConfiguration
 }
 
 func resourceMailServerUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	mailConfiguration := newMailConfigurationFromResource(d)
 
 	bytedata, err := json.Marshal(mailConfiguration)
@@ -111,7 +113,7 @@ func resourceMailServerCreate(d *schema.ResourceData, m interface{}) error {
 
 func resourceMailServerRead(d *schema.ResourceData, m interface{}) error {
 
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	req, err := client.Get("/rest/api/1.0/admin/mail-server")
 
 	if err != nil {
@@ -145,7 +147,7 @@ func resourceMailServerRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceMailServerDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	_, err := client.Delete("/rest/api/1.0/admin/mail-server")
 	return err
 }

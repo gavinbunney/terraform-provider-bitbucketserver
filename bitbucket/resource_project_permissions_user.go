@@ -2,10 +2,11 @@ package bitbucket
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
-	"github.com/hashicorp/terraform/helper/validation"
 	"net/url"
 	"strings"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceProjectPermissionsUser() *schema.Resource {
@@ -39,7 +40,7 @@ func resourceProjectPermissionsUser() *schema.Resource {
 }
 
 func resourceProjectPermissionsUserUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	_, err := client.Put(fmt.Sprintf("/rest/api/1.0/projects/%s/permissions/users?permission=%s&name=%s",
 		d.Get("project").(string),
 		url.QueryEscape(d.Get("permission").(string)),
@@ -93,7 +94,7 @@ func resourceProjectPermissionsUserRead(d *schema.ResourceData, m interface{}) e
 }
 
 func resourceProjectPermissionsUserDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/projects/%s/permissions/users?name=%s",
 		d.Get("project").(string),
 		url.QueryEscape(d.Get("user").(string)),

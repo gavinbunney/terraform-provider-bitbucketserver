@@ -2,10 +2,12 @@ package bitbucket
 
 import (
 	"encoding/json"
-	"github.com/hashicorp/terraform/helper/schema"
 	"io/ioutil"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+// ApplicationProperties ...
 type ApplicationProperties struct {
 	Version     string `json:"version,omitempty"`
 	BuildNumber string `json:"buildNumber,omitempty"`
@@ -39,7 +41,7 @@ func dataSourceApplicationProperties() *schema.Resource {
 }
 
 func dataSourceApplicationPropertiesRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	req, err := client.Get("/rest/api/1.0/application-properties")
 
 	if err != nil {

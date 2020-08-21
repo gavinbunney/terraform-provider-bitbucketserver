@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+// PluginConfig ...
 type PluginConfig struct {
 	ValuesRaw json.RawMessage `json:"values"`
 	Values    string
@@ -39,7 +40,7 @@ func resourcePluginConfig() *schema.Resource {
 }
 
 func resourcePluginConfigCreateOrUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	configEndpoint := d.Get("config_endpoint").(string)
 	values := d.Get("values").(string)
 	config := []byte(values)
@@ -86,7 +87,7 @@ func resourcePluginConfigDelete(d *schema.ResourceData, m interface{}) error {
 }
 
 func readPluginConfig(m interface{}, configEndpoint string) (PluginConfig, error) {
-	client := m.(*BitbucketServerProvider).BitbucketClient
+	client := m.(*ServerProvider).Client
 	resp, err := client.Get(configEndpoint)
 	if err != nil {
 		return PluginConfig{}, err
