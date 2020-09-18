@@ -321,40 +321,36 @@ func resourceDefaultReviewersConditionRead(d *schema.ResourceData, m interface{}
 		return err
 	}
 
-	if resp.StatusCode != 200 {
-		return fmt.Errorf("unable to find a matching default reviewers condition %s. API returned %d", d.Id(), resp.StatusCode)
-	}
+	if resp.StatusCode == 200 {
+		var conditions []DefaultReviewersConditionResp
 
-	var conditions []DefaultReviewersConditionResp
+		body, err := ioutil.ReadAll(resp.Body)
 
-	body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
 
-	if err != nil {
-		return err
-	}
+		err = json.Unmarshal(body, &conditions)
 
-	err = json.Unmarshal(body, &conditions)
+		if err != nil {
+			return err
+		}
 
-	if err != nil {
-		return err
-	}
+		for _, c := range conditions {
+			cID := strconv.Itoa(c.ID)
 
-	for _, c := range conditions {
-		cID := strconv.Itoa(c.ID)
-
-		if cID == conditionID {
-			d.Set("project_key", projectKey)
-			d.Set("repository_slug", repositorySlug)
-			d.Set("source_matcher", collapseMatcher(refMatcherToMatcher(c.SourceRefMatcher)))
-			d.Set("target_matcher", collapseMatcher(refMatcherToMatcher(c.TargetRefMatcher)))
-			d.Set("reviewers", collapseReviewers(c.Reviewers))
-			d.Set("required_approvals", c.RequiredApprovals)
-
-			return nil
+			if cID == conditionID {
+				d.Set("project_key", projectKey)
+				d.Set("repository_slug", repositorySlug)
+				d.Set("source_matcher", collapseMatcher(refMatcherToMatcher(c.SourceRefMatcher)))
+				d.Set("target_matcher", collapseMatcher(refMatcherToMatcher(c.TargetRefMatcher)))
+				d.Set("reviewers", collapseReviewers(c.Reviewers))
+				d.Set("required_approvals", c.RequiredApprovals)
+			}
 		}
 	}
 
-	return fmt.Errorf("unable to find a matching default reviewers condition %s", d.Id())
+	return nil
 }
 
 func resourceDefaultReviewersConditionDelete(d *schema.ResourceData, m interface{}) error {
