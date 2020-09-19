@@ -57,6 +57,7 @@ func resourceDefaultReviewersCondition() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceDefaultReviewersConditionCreate,
 		Read:   resourceDefaultReviewersConditionRead,
+		Exists: resourceDefaultReviewersConditionExists,
 		Delete: resourceDefaultReviewersConditionDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -247,6 +248,18 @@ func contains(s []string, e string) bool {
 	return false
 }
 
+func selectConditionByID(conditions []DefaultReviewersConditionResp, conditionID string) *DefaultReviewersConditionResp {
+	for _, c := range conditions {
+		cID := strconv.Itoa(c.ID)
+
+		if cID == conditionID {
+			return &c
+		}
+	}
+
+	return nil
+}
+
 func resourceDefaultReviewersConditionCreate(d *schema.ResourceData, m interface{}) error {
 	projectKey := d.Get("project_key").(string)
 	repositorySlug := d.Get("repository_slug").(string)
@@ -256,11 +269,11 @@ func resourceDefaultReviewersConditionCreate(d *schema.ResourceData, m interface
 	reviewers := expandReviewers(d.Get("reviewers").(*schema.Set))
 	requiredApprovals := d.Get("required_approvals").(int)
 
-	if contains(validMatcherTypeIDs, sourceMatcher.Type.ID) == false {
+	if !contains(validMatcherTypeIDs, sourceMatcher.Type.ID) {
 		return fmt.Errorf("source_matcher.type_id %s must be one of %v", sourceMatcher.Type.ID, validMatcherTypeIDs)
 	}
 
-	if contains(validMatcherTypeIDs, targetMatcher.Type.ID) == false {
+	if !contains(validMatcherTypeIDs, targetMatcher.Type.ID) {
 		return fmt.Errorf("target_matcher.type_id %s must be one of %v", targetMatcher.Type.ID, validMatcherTypeIDs)
 	}
 
@@ -336,21 +349,57 @@ func resourceDefaultReviewersConditionRead(d *schema.ResourceData, m interface{}
 			return err
 		}
 
-		for _, c := range conditions {
-			cID := strconv.Itoa(c.ID)
+		condition := selectConditionByID(conditions, conditionID)
 
-			if cID == conditionID {
-				d.Set("project_key", projectKey)
-				d.Set("repository_slug", repositorySlug)
-				d.Set("source_matcher", collapseMatcher(refMatcherToMatcher(c.SourceRefMatcher)))
-				d.Set("target_matcher", collapseMatcher(refMatcherToMatcher(c.TargetRefMatcher)))
-				d.Set("reviewers", collapseReviewers(c.Reviewers))
-				d.Set("required_approvals", c.RequiredApprovals)
-			}
+		if condition != nil {
+			d.Set("project_key", projectKey)
+			d.Set("repository_slug", repositorySlug)
+			d.Set("source_matcher", collapseMatcher(refMatcherToMatcher(condition.SourceRefMatcher)))
+			d.Set("target_matcher", collapseMatcher(refMatcherToMatcher(condition.TargetRefMatcher)))
+			d.Set("reviewers", collapseReviewers(condition.Reviewers))
+			d.Set("required_approvals", condition.RequiredApprovals)
 		}
 	}
 
 	return nil
+}
+
+func resourceDefaultReviewersConditionExists(d *schema.ResourceData, m interface{}) (bool, error) {
+	conditionID, projectKey, repositorySlug, err := parseResourceID(d.Id())
+
+	if err != nil {
+		return false, err
+	}
+
+	client := m.(*BitbucketServerProvider).BitbucketClient
+
+	resp, err := client.Get(getReadConditionURI(projectKey, repositorySlug))
+
+	if err != nil {
+		return false, err
+	}
+
+	if resp.StatusCode != 200 {
+		return false, fmt.Errorf("failed to get default reviewers condition %s. API returned %d", d.Id(), resp.StatusCode)
+	}
+
+	var conditions []DefaultReviewersConditionResp
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		return false, err
+	}
+
+	err = json.Unmarshal(body, &conditions)
+
+	if err != nil {
+		return false, err
+	}
+
+	condition := selectConditionByID(conditions, conditionID)
+
+	return condition != nil, nil
 }
 
 func resourceDefaultReviewersConditionDelete(d *schema.ResourceData, m interface{}) error {
