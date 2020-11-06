@@ -24,10 +24,19 @@ func TestAccBitbucketRepository_basic(t *testing.T) {
 			project = bitbucketserver_project.test.key
 			name = "test-repo-for-repository-test"
 			description = "My Repo"
+			forkable = false
+			public = false
+		}
+
+		resource "bitbucketserver_repository" "test_repo_defaults" {
+			project = bitbucketserver_project.test.key
+			name = "test-repo-for-repository-test_defaults"
+			description = "My_Repo2"
 		}
 	`, rand.New(rand.NewSource(time.Now().UnixNano())).Int())
 
 	configModified := strings.ReplaceAll(config, "My Repo", "My Updated Repo")
+	configModifiedBool := strings.ReplaceAll(config, "false", "true")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -41,6 +50,10 @@ func TestAccBitbucketRepository_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "slug", "test-repo-for-repository-test"),
 					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "name", "test-repo-for-repository-test"),
 					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "description", "My Repo"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "forkable", "false"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "public", "false"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo_defaults", "forkable", "true"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo_defaults", "public", "false"),
 				),
 			},
 			{
@@ -50,6 +63,16 @@ func TestAccBitbucketRepository_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "slug", "test-repo-for-repository-test"),
 					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "name", "test-repo-for-repository-test"),
 					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "description", "My Updated Repo"),
+				),
+			},
+			{
+				Config: configModifiedBool,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckBitbucketRepositoryExists("bitbucketserver_repository.test_repo", &repo),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "slug", "test-repo-for-repository-test"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "name", "test-repo-for-repository-test"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "forkable", "true"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository.test_repo", "public", "true"),
 				),
 			},
 		},

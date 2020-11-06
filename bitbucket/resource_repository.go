@@ -19,7 +19,7 @@ type Repository struct {
 	Name        string `json:"name,omitempty"`
 	Slug        string `json:"slug,omitempty"`
 	Description string `json:"description,omitempty"`
-	Forkable    bool   `json:"forkable,omitempty"`
+	Forkable    bool   `json:"forkable"`
 	Public      bool   `json:"public,omitempty"`
 	Links       struct {
 		Clone []CloneUrl `json:"clone,omitempty"`
