@@ -15,6 +15,11 @@ func (t jsonTime) MarshalJSON() ([]byte, error) {
 func (t *jsonTime) UnmarshalJSON(s []byte) (err error) {
 	r := strings.Replace(string(s), `"`, ``, -1)
 
+	if r == "null" {
+		*(*time.Time)(t) = time.Time{}
+		return
+	}
+
 	q, err := strconv.ParseInt(r, 10, 64)
 	if err != nil {
 		return err
