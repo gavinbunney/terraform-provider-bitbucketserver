@@ -375,12 +375,12 @@ func resourceDefaultReviewersConditionExists(d *schema.ResourceData, m interface
 
 	resp, err := client.Get(getReadConditionURI(projectKey, repositorySlug))
 
-	if err != nil {
-		return false, err
+	if resp != nil && resp.StatusCode == 404 {
+		return false, nil
 	}
 
-	if resp.StatusCode != 200 {
-		return false, fmt.Errorf("failed to get default reviewers condition %s. API returned %d", d.Id(), resp.StatusCode)
+	if err != nil {
+		return false, err
 	}
 
 	var conditions []DefaultReviewersConditionResp
