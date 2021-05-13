@@ -3,6 +3,7 @@ package bitbucket
 import (
 	"fmt"
 	"github.com/hashicorp/terraform/helper/schema"
+	"log"
 	"net/url"
 )
 
@@ -74,7 +75,9 @@ func resourceGroupRead(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
-	return fmt.Errorf("unable to find a matching group %s", groupName)
+	d.SetId("")
+	log.Printf("[WARN] Group %s not found, removing from state", groupName)
+	return nil
 }
 
 func resourceGroupUpdate(d *schema.ResourceData, m interface{}) error {
