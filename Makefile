@@ -66,13 +66,6 @@ test-compile:
 	fi
 	go test -c $(TEST) $(TESTARGS)
 
-website-serve:
-	@cd docusaurus/website && npm start
-
-website-publish:
-	@cd docusaurus/website && npm run build
-	@cd docusaurus/website && CURRENT_BRANCH=master USE_SSH=true npm run publish-gh-pages
-
 ci-build-setup:
 	sudo rm /usr/local/bin/docker-compose
 	curl -L https://github.com/docker/compose/releases/download/1.25.4/docker-compose-`uname -s`-`uname -m` > docker-compose
@@ -80,4 +73,4 @@ ci-build-setup:
 	sudo mv docker-compose /usr/local/bin
 	bash scripts/gogetcookie.sh
 
-.PHONY: build test testacc vet fmt fmtcheck errcheck test-compile build-binaries website-serve website-publish ci-build-setup bitbucket-start bitbucket-stop
+.PHONY: build test testacc vet fmt fmtcheck errcheck test-compile build-binaries ci-build-setup bitbucket-start bitbucket-stop
