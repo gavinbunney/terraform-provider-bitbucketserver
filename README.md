@@ -1,6 +1,6 @@
 # Bitbucket Server Terraform Provider
 
-[![Build Status](https://travis-ci.org/gavinbunney/terraform-provider-bitbucketserver.svg?branch=master)](https://travis-ci.org/gavinbunney/terraform-provider-bitbucketserver) [![codecov](https://codecov.io/gh/gavinbunney/terraform-provider-bitbucketserver/branch/master/graph/badge.svg)](https://codecov.io/gh/gavinbunney/terraform-provider-bitbucketserver) [![user guide](https://img.shields.io/badge/-user%20guide-blue)](https://gavinbunney.github.io/terraform-provider-bitbucketserver)
+[![user guide](https://img.shields.io/badge/-user%20guide-blue)](https://registry.terraform.io/providers/gavinbunney/bitbucketserver/latest)
 
 This terraform provider allows management of **Bitbucket Server** resources. The bundled terraform bitbucket provider works only for Bitbucket Cloud.
 
