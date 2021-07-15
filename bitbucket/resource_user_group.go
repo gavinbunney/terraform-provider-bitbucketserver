@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/terraform/helper/schema"
+	"log"
 	"strings"
 )
 
@@ -103,7 +104,9 @@ func resourceUserGroupRead(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
-	return fmt.Errorf("unable to find a matching user %s in group %s", userGroup.User, userGroup.Group)
+	d.SetId("")
+	log.Printf("[WARN] User %s in group %s not found, removing from state", userGroup.User, userGroup.Group)
+	return nil
 }
 
 func resourceUserGroupDelete(d *schema.ResourceData, m interface{}) error {
