@@ -296,7 +296,7 @@ func resourcePluginCreate(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId(key)
 
-	err = resource.Retry(time.Minute * 2,
+	err = resource.Retry(time.Minute*2,
 		func() *resource.RetryError {
 			exists, err := resourcePluginExists(d, m)
 			if exists == false || err != nil {
@@ -310,7 +310,7 @@ func resourcePluginCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	// need to also run an update loop to set enabled flags and license details
-	err = resource.Retry(time.Minute * 2,
+	err = resource.Retry(time.Minute*2,
 		func() *resource.RetryError {
 			err := resourcePluginUpdate(d, m)
 			if err != nil {
