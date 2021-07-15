@@ -31,6 +31,12 @@ testacc-bitbucket: fmtcheck
 	ulimit -n 1024; TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m -count=1
 	@sh scripts/stop-docker-compose.sh
 
+bitbucket-start:
+	@sh scripts/start-docker-compose.sh
+
+bitbucket-stop:
+	@sh scripts/stop-docker-compose.sh
+
 vet:
 	@echo "go vet ."
 	@go vet $$(go list ./... | grep -v vendor/) ; if [ $$? -eq 1 ]; then \
@@ -67,4 +73,11 @@ website-publish:
 	@cd docusaurus/website && npm run build
 	@cd docusaurus/website && CURRENT_BRANCH=master USE_SSH=true npm run publish-gh-pages
 
-.PHONY: build test testacc vet fmt fmtcheck errcheck test-compile build-binaries website-serve website-publish
+ci-build-setup:
+	sudo rm /usr/local/bin/docker-compose
+	curl -L https://github.com/docker/compose/releases/download/1.25.4/docker-compose-`uname -s`-`uname -m` > docker-compose
+	chmod +x docker-compose
+	sudo mv docker-compose /usr/local/bin
+	bash scripts/gogetcookie.sh
+
+.PHONY: build test testacc vet fmt fmtcheck errcheck test-compile build-binaries website-serve website-publish ci-build-setup bitbucket-start bitbucket-stop
