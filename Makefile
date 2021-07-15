@@ -25,17 +25,17 @@ testacc: fmtcheck
 	ulimit -n 1024; TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m -count=1
 
 testacc-bitbucket: fmtcheck
-	@sh scripts/start-docker-compose.sh
+	@bash scripts/start-docker-compose.sh
 	#The ulimit command is required to allow the tests to open more than the default 256 files as set on MacOS. The tests will fail without this. It must be done as one
 	#command otherwise the setting is lost
 	ulimit -n 1024; TF_ACC=1 go test $(TEST) -v $(TESTARGS) -timeout 120m -count=1
-	@sh scripts/stop-docker-compose.sh
+	@bash scripts/stop-docker-compose.sh
 
 bitbucket-start:
-	@sh scripts/start-docker-compose.sh
+	@bash scripts/start-docker-compose.sh
 
 bitbucket-stop:
-	@sh scripts/stop-docker-compose.sh
+	@bash scripts/stop-docker-compose.sh
 
 vet:
 	@echo "go vet ."
@@ -50,13 +50,13 @@ fmt:
 	gofmt -w $(GOFMT_FILES)
 
 fmtcheck:
-	@sh -c "'$(CURDIR)/scripts/gofmtcheck.sh'"
+	@bash -c "'$(CURDIR)/scripts/gofmtcheck.sh'"
 
 errcheck:
-	@sh -c "'$(CURDIR)/scripts/errcheck.sh'"
+	@bash -c "'$(CURDIR)/scripts/errcheck.sh'"
 
 build-binaries:
-	@sh -c "'$(CURDIR)/scripts/build.sh'"
+	@bash -c "'$(CURDIR)/scripts/build.sh'"
 
 test-compile:
 	@if [ "$(TEST)" = "./..." ]; then \
