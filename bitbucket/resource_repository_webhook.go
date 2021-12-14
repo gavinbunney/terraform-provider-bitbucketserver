@@ -82,10 +82,14 @@ func resourceRepositoryWebhookUpdate(d *schema.ResourceData, m interface{}) erro
 
 	project := d.Get("project").(string)
 	repository := d.Get("repository").(string)
-	id := d.Get("id").(int)
+	id := d.Get("webhook_id").(int)
 	webhook := newWebhookFromResource(d)
 
 	request, err := json.Marshal(webhook)
+
+	if err != nil {
+		return err
+	}
 
 	_, err = client.Put(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/webhooks/%d",
 		project,

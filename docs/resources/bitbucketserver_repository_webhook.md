@@ -1,6 +1,6 @@
 # Resource: bitbucketserver_repository_webhook
 
-Manage a repository level hook. Extends what Bitbucket does every time a repository changes, for example when code is pushed or a pull request is merged.
+Manage a repository level webhook. Extends what Bitbucket does every time a repository changes, for example when code is pushed or a pull request is merged.
 
 ## Example Usage
 
