@@ -101,7 +101,7 @@ func resourceRepositoryWebhookUpdate(d *schema.ResourceData, m interface{}) erro
 		return err
 	}
 
-	return resourceRepositoryHookRead(d, m)
+	return resourceRepositoryWebhookRead(d, m)
 }
 
 func resourceRepositoryWebhookCreate(d *schema.ResourceData, m interface{}) error {
