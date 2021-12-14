@@ -10,13 +10,13 @@ import (
 )
 
 type Webhook struct {
-	ID          int      `json:"id,omitempty"`
-	Name        string   `json:"name,omitempty"`
-	CreatedDate string   `json:"createdDate,omitempty"`
-	UpdatedDate string   `json:"updatedDate,omitempty"`
-	URL         string   `json:"url,omitempty"`
-	Active      bool     `json:"active,omitempty"`
-	Events      []string `json:"events"`
+	ID          int           `json:"id,omitempty"`
+	Name        string        `json:"name,omitempty"`
+	CreatedDate jsonTime      `json:"createdDate,omitempty"`
+	UpdatedDate jsonTime      `json:"updatedDate,omitempty"`
+	URL         string        `json:"url,omitempty"`
+	Active      bool          `json:"active,omitempty"`
+	Events      []interface{} `json:"events"`
 }
 
 type WebhookListResponse struct {
@@ -31,8 +31,8 @@ func resourceRepositoryWebhook() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceRepositoryWebhookCreate,
 		Update: resourceRepositoryWebhookUpdate,
-		Read:   resourceRepositoryHookRead,
-		Delete: resourceRepositoryHookDelete,
+		Read:   resourceRepositoryWebhookRead,
+		Delete: resourceRepositoryWebhookDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -62,6 +62,7 @@ func resourceRepositoryWebhook() *schema.Resource {
 				Type:     schema.TypeList,
 				Required: true,
 				ForceNew: false,
+				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"active": {
 				Type:     schema.TypeBool,
@@ -169,10 +170,10 @@ func resourceRepositoryWebhookRead(d *schema.ResourceData, m interface{}) error 
 
 func resourceRepositoryWebhookDelete(d *schema.ResourceData, m interface{}) error {
 	client := m.(*BitbucketServerProvider).BitbucketClient
-	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/webhooks/%s",
+	_, err := client.Delete(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/webhooks/%d",
 		d.Get("project").(string),
 		d.Get("repository").(string),
-		d.Get("webhook_id").(string)))
+		d.Get("webhook_id").(int)))
 
 	return err
 }
@@ -182,7 +183,7 @@ func newWebhookFromResource(d *schema.ResourceData) (Hook *Webhook) {
 		Name:   d.Get("name").(string),
 		URL:    d.Get("webhook_url").(string),
 		Active: d.Get("active").(bool),
-		Events: d.Get("events").([]string),
+		Events: d.Get("events").([]interface{}),
 	}
 
 	return webhook
@@ -191,11 +192,11 @@ func newWebhookFromResource(d *schema.ResourceData) (Hook *Webhook) {
 func getRepositoryWebhookFromId(d *schema.ResourceData, m interface{}) error {
 	project := d.Get("project").(string)
 	repository := d.Get("repository").(string)
-	id := d.Get("webhook_id").(string)
+	id := d.Get("webhook_id").(int)
 
 	client := m.(*BitbucketServerProvider).BitbucketClient
 
-	resp, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/webhooks/%s",
+	resp, err := client.Get(fmt.Sprintf("/rest/api/1.0/projects/%s/repos/%s/webhooks/%d",
 		project,
 		repository,
 		id,
