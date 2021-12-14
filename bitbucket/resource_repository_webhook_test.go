@@ -42,7 +42,12 @@ func TestAccBitbucketResourceRepositoryWebhook_simple(t *testing.T) {
 					resource.TestCheckResourceAttr("bitbucketserver_repository_webhook.test", "project", projectKey),
 					resource.TestCheckResourceAttr("bitbucketserver_repository_webhook.test", "repository", "repo"),
 					resource.TestCheckResourceAttr("bitbucketserver_repository_webhook.test", "webhook_url", "https://www.google.com/"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository_webhook.test", "secret", ""),
 				),
+			},
+			{
+				Config:             config,
+				ExpectNonEmptyPlan: false,
 			},
 		},
 	})
@@ -67,6 +72,7 @@ func TestAccBitbucketResourceRepositoryWebhook_complete(t *testing.T) {
 			repository  = bitbucketserver_repository.test.slug
 			name        = "%v"
 			webhook_url = "%v"
+			secret      = "abc"
 			events      = ["repo:refs_changed"]
 			active      = true
 		}
@@ -87,6 +93,7 @@ func TestAccBitbucketResourceRepositoryWebhook_complete(t *testing.T) {
 					resource.TestCheckResourceAttr("bitbucketserver_repository_webhook.test", "repository", "repo"),
 					resource.TestCheckResourceAttr("bitbucketserver_repository_webhook.test", "name", "test"),
 					resource.TestCheckResourceAttr("bitbucketserver_repository_webhook.test", "webhook_url", "https://www.oldurl.com/"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository_webhook.test", "secret", "abc"),
 				),
 			},
 			{
@@ -96,6 +103,7 @@ func TestAccBitbucketResourceRepositoryWebhook_complete(t *testing.T) {
 					resource.TestCheckResourceAttr("bitbucketserver_repository_webhook.test", "repository", "repo"),
 					resource.TestCheckResourceAttr("bitbucketserver_repository_webhook.test", "name", "test2"),
 					resource.TestCheckResourceAttr("bitbucketserver_repository_webhook.test", "webhook_url", "https://www.newurl.com/"),
+					resource.TestCheckResourceAttr("bitbucketserver_repository_webhook.test", "secret", "abc"),
 				),
 			},
 			{
@@ -104,5 +112,4 @@ func TestAccBitbucketResourceRepositoryWebhook_complete(t *testing.T) {
 			},
 		},
 	})
-
 }

@@ -9,14 +9,19 @@ import (
 	"strings"
 )
 
+type WebhookConfiguration struct {
+	Secret string `json:"secret,omitempty"`
+}
+
 type Webhook struct {
-	ID          int           `json:"id,omitempty"`
-	Name        string        `json:"name,omitempty"`
-	CreatedDate jsonTime      `json:"createdDate,omitempty"`
-	UpdatedDate jsonTime      `json:"updatedDate,omitempty"`
-	URL         string        `json:"url,omitempty"`
-	Active      bool          `json:"active,omitempty"`
-	Events      []interface{} `json:"events"`
+	ID            int                  `json:"id,omitempty"`
+	Name          string               `json:"name,omitempty"`
+	CreatedDate   jsonTime             `json:"createdDate,omitempty"`
+	UpdatedDate   jsonTime             `json:"updatedDate,omitempty"`
+	URL           string               `json:"url,omitempty"`
+	Active        bool                 `json:"active,omitempty"`
+	Events        []interface{}        `json:"events"`
+	Configuration WebhookConfiguration `json:"configuration"`
 }
 
 type WebhookListResponse struct {
@@ -63,6 +68,12 @@ func resourceRepositoryWebhook() *schema.Resource {
 				Required: true,
 				ForceNew: false,
 				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
+			"secret": {
+				Type:      schema.TypeString,
+				Optional:  true,
+				Sensitive: true,
+				Default:   "",
 			},
 			"active": {
 				Type:     schema.TypeBool,
@@ -183,11 +194,16 @@ func resourceRepositoryWebhookDelete(d *schema.ResourceData, m interface{}) erro
 }
 
 func newWebhookFromResource(d *schema.ResourceData) (Hook *Webhook) {
+	configuration := &WebhookConfiguration{
+		Secret: d.Get("secret").(string),
+	}
+
 	webhook := &Webhook{
-		Name:   d.Get("name").(string),
-		URL:    d.Get("webhook_url").(string),
-		Active: d.Get("active").(bool),
-		Events: d.Get("events").([]interface{}),
+		Name:          d.Get("name").(string),
+		URL:           d.Get("webhook_url").(string),
+		Active:        d.Get("active").(bool),
+		Events:        d.Get("events").([]interface{}),
+		Configuration: *configuration,
 	}
 
 	return webhook
@@ -224,6 +240,7 @@ func getRepositoryWebhookFromId(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("webhook_url", webhook.URL)
 	_ = d.Set("active", webhook.Active)
 	_ = d.Set("events", webhook.Events)
+	_ = d.Set("secret", webhook.Configuration.Secret)
 
 	return nil
 }
@@ -260,6 +277,7 @@ func getRepositoryWebhookFromList(d *schema.ResourceData, m interface{}) error {
 			_ = d.Set("webhook_url", webhook.URL)
 			_ = d.Set("active", webhook.Active)
 			_ = d.Set("events", webhook.Events)
+			_ = d.Set("secret", webhook.Configuration.Secret)
 			return nil
 		}
 	}

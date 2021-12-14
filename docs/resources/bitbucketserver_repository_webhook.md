@@ -20,6 +20,7 @@ resource "bitbucketserver_repository_webhook" "main" {
   repository  = bitbucketserver_repository.test.slug
   name        = "google"
   webhook_url = "https://www.google.com/"
+  secret      = "abc"
   events      = ["repo:refs_changed"]
   active      = true
 }
@@ -31,6 +32,7 @@ resource "bitbucketserver_repository_webhook" "main" {
 * `repository` - Required. Repository slug to enable hook for.
 * `name` - Required. Name of the webhook.
 * `webhook_url` - Required. The URL of the webhook.
+* `secret` - Optional. Secret used to authenticate the payload.
 * `events` - Required. A list of events to trigger the webhook url.
 * `active` - Optional. Enable or disable the webhook. Default: true
 
