@@ -72,3 +72,5 @@ $ scripts/start-docker-compose.sh
 $ make testacc
 $ scripts/stop-docker-compose.sh
 ```
+
+TEST
