@@ -156,6 +156,62 @@ func (c *BitbucketClient) PostFileUpload(endpoint string, params map[string]stri
 	return resp, err
 }
 
+type PluginInstallPayload struct {
+	PluginURI  string `json:"pluginUri"`
+	PluginName string `json:"pluginName"`
+}
+
+func (c *BitbucketClient) InstallPluginWithUri(endpoint string, uri string, pluginName string) (*http.Response, error) {
+	// The method implements this functionality
+	// https://developer.atlassian.com/platform/marketplace/registering-apps/#installing-an-app-using-the-rest-api
+	absoluteendpoint := c.Server + endpoint
+	log.Printf("[DEBUG] Sending request to POST %s", absoluteendpoint)
+
+	installPayload := PluginInstallPayload{
+		PluginURI:  uri,
+		PluginName: pluginName,
+	}
+
+	bytedata, err := json.Marshal(installPayload)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", absoluteendpoint, bytes.NewBuffer(bytedata))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/vnd.atl.plugins.install.uri+json")
+
+	req.SetBasicAuth(c.Username, c.Password)
+	req.Header.Add("X-Atlassian-Token", "no-check")
+	req.Header.Add("Accept", "application/json")
+	req.Close = true
+
+	resp, err := c.HTTPClient.Do(req)
+	log.Printf("[DEBUG] Resp: %v Err: %v", resp, err)
+	if resp != nil && (resp.StatusCode >= 400 || resp.StatusCode < 200) {
+		apiError := Error{
+			StatusCode: resp.StatusCode,
+			Endpoint:   endpoint,
+		}
+
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+
+		log.Printf("[DEBUG] Resp Body: %s", string(body))
+
+		_ = json.Unmarshal(body, &apiError)
+		return resp, error(apiError)
+
+	}
+
+	return resp, err
+}
+
 func (c *BitbucketClient) Get(endpoint string) (*http.Response, error) {
 	return c.Do("GET", endpoint, nil, "application/json")
 }

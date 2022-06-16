@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/resource"
-	"github.com/hashicorp/terraform/helper/schema"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"regexp"
 	"time"
+
+	"github.com/hashicorp/terraform/helper/resource"
+	"github.com/hashicorp/terraform/helper/schema"
 )
 
 type Plugin struct {
@@ -263,24 +263,6 @@ func resourcePluginCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	file, err := ioutil.TempFile(os.TempDir(), "*"+marketplacePluginVersion.Filename())
-	if err != nil {
-		return err
-	}
-
-	defer os.Remove(file.Name())
-
-	// download the plugin artifact for uploading to the API
-	err = provider.MarketplaceClient.DownloadArtifact(marketplacePluginVersion.Embedded.Artifact.Links.Binary.Href, file)
-	if err != nil {
-		return err
-	}
-
-	err = file.Close()
-	if err != nil {
-		return err
-	}
-
 	// first get a token for interacting with the UPM
 	resp, err := provider.BitbucketClient.Get("/rest/plugins/1.0/?os_authType=basic")
 	if err != nil {
@@ -288,8 +270,10 @@ func resourcePluginCreate(d *schema.ResourceData, m interface{}) error {
 	}
 	upmToken := resp.Header.Get("upm-token")
 
-	// now we can use the token to upload the downloaded marketplace file to bitbucket
-	_, err = provider.BitbucketClient.PostFileUpload("/rest/plugins/1.0/?token="+upmToken, nil, "plugin", file.Name())
+	pluginUri := marketplacePluginVersion.Embedded.Artifact.Links.Binary.Href
+
+	// now we can use the token to install plugin to Bitbucket
+	_, err = provider.BitbucketClient.InstallPluginWithUri("/rest/plugins/1.0/?token="+upmToken, pluginUri, d.Get("key").(string))
 	if err != nil {
 		return err
 	}
