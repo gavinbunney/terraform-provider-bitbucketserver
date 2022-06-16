@@ -3,8 +3,9 @@ package bitbucket
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform/helper/schema"
 	"net/url"
+
+	"github.com/hashicorp/terraform/helper/schema"
 )
 
 type PaginatedGroupUsersValue struct {
@@ -96,7 +97,7 @@ func dataSourceGroupUsersRead(d *schema.ResourceData, m interface{}) error {
 func readGroupUsers(m interface{}, group string, filter string) ([]GroupUser, error) {
 	client := m.(*BitbucketServerProvider).BitbucketClient
 
-	resourceURL := fmt.Sprintf("/rest/api/1.0/admin/groups/more-members?context=%s",
+	resourceURL := fmt.Sprintf("/rest/api/1.0/admin/groups/more-members?context=%s&limit=100",
 		url.QueryEscape(group),
 	)
 
@@ -130,7 +131,7 @@ func readGroupUsers(m interface{}, group string, filter string) ([]GroupUser, er
 		}
 
 		if groupUsers.IsLastPage == false {
-			resourceURL = fmt.Sprintf("/rest/api/1.0/projects/%s/permissions/users?start=%d",
+			resourceURL = fmt.Sprintf("/rest/api/1.0/admin/groups/more-members?context=%s&limit=100&start=%d",
 				group,
 				groupUsers.NextPageStart,
 			)
