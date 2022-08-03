@@ -15,7 +15,7 @@ data "bitbucketserver_repository_hooks" "main" {
 #     "name"        = "Reject Force Push",
 #     "type"        = "PRE_RECEIVE",
 #     "description" = "Reject all force pushes (git push --force) to this repository",
-#     "version"     = "6.10.0",
+#     "version"     = "7.21.3",
 #     "scope_types" = ["PROJECT", "REPOSITORY"],
 #     "enabled"     = "false",
 #     "configured"  = "false",
@@ -26,7 +26,7 @@ data "bitbucketserver_repository_hooks" "main" {
 ### Applying a Custom Filter
 
 Find specific types of repository hooks.
- 
+
 ```hcl
 data "bitbucketserver_project_hooks" "main" {
   project    = "TEST"
@@ -49,9 +49,9 @@ data "bitbucketserver_project_hooks" "main" {
     * `name` - Name of the hook e.g. `Reject Force Push`
     * `type` - Type of the hook e.g. `PRE_RECEIVE`
     * `description` - Detailed description e.g. `Reject all force pushes (git push --force) to this repository`
-    * `version` - Version of the hook, for system hooks this is the bitbucket version e.g. `6.10.0`
+    * `version` - Version of the hook, for system hooks this is the bitbucket version e.g. `7.21.3`
     * `scope_types` - List of strings containing the scopes available for this hook, e.g. `["PROJECT", "REPOSITORY"]`
     * `enabled` - Set if this hook is enabled for this project
-    * `configured` - Set if the hook is configured for this project 
+    * `configured` - Set if the hook is configured for this project
     * `scope_type` - Type of scope applied for this hook, e.g. `REPOSITORY`
     * `scope_resource_id` - Reference ID of the applied scope, e.g. `1`
