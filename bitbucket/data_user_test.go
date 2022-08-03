@@ -23,7 +23,7 @@ func TestAccBitbucketDataUser(t *testing.T) {
 					resource.TestCheckResourceAttr("data.bitbucketserver_user.test", "name", "admin"),
 					resource.TestCheckResourceAttr("data.bitbucketserver_user.test", "email_address", "admin@example.com"),
 					resource.TestCheckResourceAttr("data.bitbucketserver_user.test", "display_name", "Admin"),
-					resource.TestCheckResourceAttr("data.bitbucketserver_user.test", "user_id", "1"),
+					resource.TestCheckResourceAttr("data.bitbucketserver_user.test", "user_id", "2"),
 				),
 			},
 		},

@@ -2,7 +2,7 @@ version: '2'
 
 services:
   bitbucket:
-    image: atlassian/bitbucket-server:6.10.0
+    image: atlassian/bitbucket-server:7.21.3
     restart: always
     networks:
       - bridge
