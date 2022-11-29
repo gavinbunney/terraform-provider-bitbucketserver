@@ -70,7 +70,7 @@ Typically this is a user with `SYS_ADMIN` global permissions.
 You can also specify the provider configuration using the following env vars:
 
 * `BITBUCKET_SERVER`
-* `BITBUCKER_USERNAME`
+* `BITBUCKET_USERNAME`
 * `BITBUCKET_PASSWORD`
 
 > Note: The hcl provider configuration takes precedence over the environment variables.
