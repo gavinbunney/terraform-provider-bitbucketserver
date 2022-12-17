@@ -6,7 +6,7 @@ import (
 
 func dataSourceProject() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceUserRead,
+		Read: dataSourceProjectRead,
 
 		Schema: map[string]*schema.Schema{
 			"name": {
