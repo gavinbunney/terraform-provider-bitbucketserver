@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   goreleaser:
+    environment: terraform-provider-release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
