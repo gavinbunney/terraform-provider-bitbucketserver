@@ -54,7 +54,6 @@ func resourceRepository() *schema.Resource {
 			},
 			"slug": {
 				Type:     schema.TypeString,
-				Optional: true,
 				Computed: true,
 			},
 			"project": {
