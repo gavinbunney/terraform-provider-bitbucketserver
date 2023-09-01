@@ -466,7 +466,7 @@ func resourcePluginExists(d *schema.ResourceData, m interface{}) (bool, error) {
 	))
 
 	if err != nil {
-		return false, fmt.Errorf("failed to get plugin %s from bitbucket: %+v", key, err)
+		return false, nil
 	}
 
 	if req.StatusCode == 200 {
