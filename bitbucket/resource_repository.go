@@ -208,7 +208,7 @@ func createNewRepositoryFromFork(client *BitbucketClient, d *schema.ResourceData
 	requestBody := &RepositoryFork{
 		Name: repository,
 		Project: RepositoryForkProject{
-			Key: forkProject,
+			Key: project,
 		},
 	}
 
