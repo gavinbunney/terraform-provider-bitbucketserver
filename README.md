@@ -1,6 +1,6 @@
 # Bitbucket Server Terraform Provider
 
-[![user guide](https://img.shields.io/badge/-user%20guide-blue)](https://registry.terraform.io/providers/gavinbunney/bitbucketserver/latest)
+[![user guide](https://img.shields.io/badge/-user%20guide-blue)](https://registry.terraform.io/providers/xvlcwk-terraform/bitbucketserver/latest)
 
 This terraform provider allows management of **Bitbucket Server** resources. The bundled terraform bitbucket provider works only for Bitbucket Cloud.
 
@@ -8,8 +8,6 @@ This terraform provider allows management of **Bitbucket Server** resources. The
 
 Download a binary for your system from the release page and remove the `-os-arch` details so you're left with `terraform-provider-bitbucketserver`.
 Use `chmod +x` to make it executable and then either place it at the root of your Terraform folder or in the Terraform plugin folder on your system.
-
-See [User Guide](https://gavinbunney.github.io/terraform-provider-bitbucketserver) for details on all the provided data and resource types.
 
 ### Example
 
@@ -41,7 +39,7 @@ resource "bitbucketserver_repository" "test" {
 -	[Go](https://golang.org/doc/install) 1.11+
     - correctly setup [GOPATH](http://golang.org/doc/code.html#GOPATH
     - add `$GOPATH/bin` to your `$PATH`
-- clone this repository to `$GOPATH/src/github.com/gavinbunney/terraform-provider-bitbucketserver`
+- clone this repository to `$GOPATH/src/github.com/xvlcwk-terraform/terraform-provider-bitbucketserver`
 
 ### Building the provider
 

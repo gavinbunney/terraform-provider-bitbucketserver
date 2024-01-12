@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/gavinbunney/terraform-provider-bitbucketserver/bitbucket"
 	"github.com/hashicorp/terraform/plugin"
+	"github.com/xvlcwk-terraform/terraform-provider-bitbucketserver/bitbucket"
 )
 
 func main() {
