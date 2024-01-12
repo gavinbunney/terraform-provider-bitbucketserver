@@ -63,6 +63,10 @@ func resourceUser() *schema.Resource {
 				Sensitive: true,
 				Computed:  true,
 			},
+			"user_id": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
 		},
 	}
 }
