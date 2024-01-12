@@ -19,7 +19,7 @@ type Webhook struct {
 	CreatedDate   jsonTime             `json:"createdDate,omitempty"`
 	UpdatedDate   jsonTime             `json:"updatedDate,omitempty"`
 	URL           string               `json:"url,omitempty"`
-	Active        bool                 `json:"active,omitempty"`
+	Active        bool                 `json:"active"`
 	Events        []interface{}        `json:"events"`
 	Configuration WebhookConfiguration `json:"configuration"`
 }
